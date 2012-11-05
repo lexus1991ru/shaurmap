@@ -6,7 +6,7 @@ class WrapperDB
 
     function Connect()
     {
-        $db = mysql_connect('localhost', 'root', 'Qq12345', 'shaurmap');
+        $db = mysql_connect('localhost', 'root', 'pass', 'shaurmap');
         if(!$db)
         {
           echo "Fuck you!";
