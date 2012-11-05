@@ -29,7 +29,7 @@ class WrapperDB
         $result = $this->connection->query($query);
         if($result)
         {
-            foreach($row in )
+            //foreach($row in )
         }
 
     }
