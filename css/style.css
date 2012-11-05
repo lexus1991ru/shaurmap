@@ -1,4 +1,7 @@
-* { padding: 0px; margin: 0px; }
+* {
+	padding: 0px;
+	margin: 0px;
+}
 body {
 	background: #fff url(../img/bg2.png);
 	font-family: tahoma, sans-serif;

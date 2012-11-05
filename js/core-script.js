@@ -11,11 +11,10 @@ function initShaurmap() {
 		behaviors: ['drag', 'scrollZoom']
 	});
 	
-	// Ползунок изменения масштаба
+	// РџРѕР»Р·СѓРЅРѕРє РёР·РјРµРЅРµРЅРёСЏ РјР°СЃС€С‚Р°Р±Р°
 	map.controls.add('zoomControl', { left : '15px', bottom: '15px' });
 
-	
-	// Создаем метку
+	// РЎРѕР·РґР°РµРј РјРµС‚РєСѓ
 	var placemark = null, latitude = 0, longitude = 0;
 
 	for(var i = 0; i < 100; i++ ) {
