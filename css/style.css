@@ -1,0 +1,28 @@
+* { padding: 0px; margin: 0px; }
+body {
+	background: #fff url(../img/bg2.png);
+	font-family: tahoma, sans-serif;
+	font-size: 12px; 
+}
+.main-wrapper {
+	margin: 50px auto 0;
+	padding: 10px;
+	width: 1200px;
+	background-color: rgba(179, 236, 236, 0.2);
+	border-radius: 8px;
+}
+.shaurmap {
+	background: #F8FBF2;
+	border-radius: 3px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, .5);
+}
+.shaurmap .leftblock {
+	width: 300px;
+	height: 500px;
+	background-color: #f2f5fb;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	box-shadow: 1px 0px 1px rgba(0, 0, 0, .3);
+}
+.inline-block { display: inline-block; }
+.top { vertical-align: top; }
