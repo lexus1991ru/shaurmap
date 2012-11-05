@@ -1,7 +1,5 @@
 /** 
-*
 *	Shaurmap core script
-*
 **/
 
 function initShaurmap() {
