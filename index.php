@@ -6,33 +6,33 @@ class WrapperDB
 
     function Connect()
     {
-        $db = mysql_connect('localhost', 'root', 'Qq12345', 'shaurmap');
-        if(!$db)
+        $this->connection = new mysqli('localhost', 'root', 'Qq12345', 'shaurmap');
+        if($this->connection->connect_errno)
         {
-          echo "Fuck you!";
+            echo "Fuck you!";
         }
         else
         {
-          echo "Ok!";
+            echo "Ok!";
         }
     }
 
     function Disconnect()
     {
-      if($connection)
-      {
-        $connection->close();
+        $this->connection->close();
         echo "Connection closed!";
-      }
-      else
-      {
-        echo "No connection to disconnect";
-      }
+    }
+
+    function ()
+    {
+
     }
 }
 
 $a = new WrapperDB();
 $a->Connect();
+
+
 $a->Disconnect();
 
 ?>
