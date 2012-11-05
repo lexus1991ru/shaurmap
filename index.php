@@ -6,33 +6,40 @@ class WrapperDB
 
     function Connect()
     {
-        $db = mysql_connect('localhost', 'root', 'pass', 'shaurmap');
-        if(!$db)
+        $this->connection = new mysqli('localhost', 'root', '', 'shaurmap');
+        if($this->connection->connect_errno)
         {
-          echo "Fuck you!";
+            echo "Fuck you!";
         }
         else
         {
-          echo "Ok!";
+            echo "Ok!";
         }
     }
 
     function Disconnect()
     {
-      if($connection)
-      {
-        $connection->close();
+        $this->connection->close();
         echo "Connection closed!";
-      }
-      else
-      {
-        echo "No connection to disconnect";
-      }
+    }
+
+    function getCities()
+    {
+        $query = "SELECT * FROM cities";
+        $result = $this->connection->query($query);
+        if($result)
+        {
+            foreach($row in )
+        }
+
     }
 }
 
 $a = new WrapperDB();
+
 $a->Connect();
+
+
 $a->Disconnect();
 
 ?>
