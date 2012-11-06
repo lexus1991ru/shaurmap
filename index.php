@@ -2,6 +2,7 @@
 
 class City
 {
+
     private $id;
     private $name;
     private $latitude;
