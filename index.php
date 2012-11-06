@@ -255,6 +255,27 @@ class WrapperDB
             return NULL;
         }
     }
+
+    function getMarketsFromLocation($x, $y, $w, $h)
+    {
+        $query = "SELECT * FROM marketdesc WHERE ((latitude < '".$y."') AND (latitude > ('".$y."' - '".$h."')) AND (longitude > '".$x."') AND (lon1itude < ('".$x."' + '".$w."')))";
+        $result = $this->connection->query($query);
+        $markets = array();
+        if($result->num_rows)
+        {
+            for($i = 0; $i < $result->num_rows; $i++)
+            {
+                $row = $result->fetch_assoc();
+                $market = new Market($row['marketID'], $row['marketName'], $row['cityID'],
+                                     $row['latitude'], $row['longitude'], $row['addedDate'],
+                                     $row['closedDate']);
+                $market->printMarket();
+                echo "<br />";
+                $markets[$i] = $market;
+            }
+        }
+        return $markets;
+    }
 }
 
 $a = new WrapperDB();
