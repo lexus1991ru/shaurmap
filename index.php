@@ -2,7 +2,6 @@
 
 class City
 {
-
     private $id;
     private $name;
     private $latitude;
@@ -99,6 +98,40 @@ class MarketDesc
                      "lemonade" => $this->lemonade, "cigarettes" => $this->cigarettes,
                      "beer" => $this->beer);
     }
+}
+
+class Comment
+{
+    private $commentID;
+    private $marketID;
+    private $userID;
+    private $commentTime;
+    private $text;
+    private $mark;
+    private $photos;
+    private $approved;
+
+    function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
+                         $_mark, $_photos, $_approved)
+    {
+        $this->commentID =   $_commentID;
+        $this->marketID =    $_marketID;
+        $this->userID =      $_userID;
+        $this->commentTime = $_commentTime;
+        $this->text =        $_text;
+        $this->mark =        $_mark;
+        $this->photos =      $_photos;
+        $this->approved =    $_approved;
+    }
+
+    function getMarketDesc()
+    {
+        return array("commentID" => $this->commentID, "marketID" => $this->marketID,
+                      "userID" => $this->userID, "commentTime" => $this->commentTime,
+                      "text" => $this->text, "mark" => $this->mark,
+                      "photos" => $this->photos, "approved" => $this->approved);
+    }
+
 }
 
 class WrapperDB
@@ -255,6 +288,45 @@ class WrapperDB
             return NULL;
         }
     }
+
+    function getMarketsFromLocation($x, $y, $w, $h)
+    {
+        $query = "SELECT * FROM marketdesc WHERE ((latitude < '".$y."') AND (latitude > ('".$y."' - '".$h."')) AND (longitude > '".$x."') AND (lon1itude < ('".$x."' + '".$w."')))";
+        $result = $this->connection->query($query);
+        $markets = array();
+        if($result->num_rows)
+        {
+            for($i = 0; $i < $result->num_rows; $i++)
+            {
+                $row = $result->fetch_assoc();
+                $market = new Market($row['marketID'], $row['marketName'], $row['cityID'],
+                                     $row['latitude'], $row['longitude'], $row['addedDate'],
+                                     $row['closedDate']);
+                $market->printMarket();
+                echo "<br />";
+                $markets[$i] = $market;
+            }
+        }
+        return $markets;
+    }
+
+    function checkComment($commentID, $verdict)
+    {
+        $query = "";
+        if($verdict)
+        {
+            $query = "UPDATE comments SET approved='1' WHERE commentID='".$commentID."'";
+        }
+        else
+        {
+            $query = "UPDATE comments SET approved='0' WHERE commentID='".$commentID."'";
+        }
+        $this->connection->query($query);
+    }
+
+
+
+
 }
 
 $a = new WrapperDB();
