@@ -102,7 +102,7 @@ class MarketDesc
 
 class WrapperDB
 {
-    private $connection = NULL;
+    private $connection = false;
 
     function Connect()
     {
