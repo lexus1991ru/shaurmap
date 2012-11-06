@@ -324,8 +324,43 @@ class WrapperDB
         $this->connection->query($query);
     }
 
+    function getCommentsByUserId($userID)
+    {
+        $query = "SELECT * FROM comments WHERE userID='".$userID."'";
+        $result = $this->connection->query($query);
+        $comments = array();
+        if($result->num_rows)
+        {
+            for($i = 0; $i < $result->num_rows; $i++)
+            {
+                $row = $result->fetch_assoc();
+                $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
+                                       $row['commentTime'], $row['text'], $row['mark'],
+                                       $row['photos'], $row['approved']);
+                $comments[$i] = $comment;
+            }
+        }
+        return $comments;
+    }
 
-
+    function getCommentsByMarketId($marketID)
+    {
+      $query = "SELECT * FROM comments WHERE marketID='".$marketID."'";
+      $result = $this->connection->query($query);
+      $comments = array();
+      if($result->num_rows)
+      {
+          for($i = 0; $i < $result->num_rows; $i++)
+          {
+              $row = $result->fetch_assoc();
+              $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
+                                     $row['commentTime'], $row['text'], $row['mark'],
+                                     $row['photos'], $row['approved']);
+                $comments[$i] = $comment;
+            }
+        }
+        return $comments;
+    }
 
 }
 
