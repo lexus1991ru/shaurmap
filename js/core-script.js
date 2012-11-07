@@ -2,10 +2,17 @@
 *	Shaurmap core script
 **/
 
+var shaurmaShop = {
+	name: 'Шаурма на средном',
+	desc: 'Самая четкая шаурма в Нижнем! Отвечаю!',
+	htmlBalloonContent: $('#balloon').html()
+	
+}
+
 function initShaurmap() {
 	var map = new ymaps.Map('map', {
-		center: [56.28, 44.0],
-		zoom: 11,
+		center: [56.3, 43.95],
+		zoom: 12,
 		behaviors: ['drag', 'scrollZoom']
 	});
 	
@@ -14,15 +21,15 @@ function initShaurmap() {
 
 	// Создаем метку
 	var placemark = null, latitude = 0, longitude = 0;
-
-	for(var i = 0; i < 100; i++ ) {
+	
+	for(var i = 0; i < 5; i++ ) {
 		latitude = Math.random()*0.1;
-		longitude = Math.random()*0.1;
+		longitude = Math.random()*0.2;
 
-		placemark = new ymaps.placemark([56.3 + latitude, 43.9 + longitude], {
-				balloonContent: '<img src="http://img-fotki.yandex.ru/get/6114/82599242.2d6/0_88b97_ec425cf5_M" />'
+		placemark = new ymaps.Placemark([56.25 + latitude, 43.85 + longitude], {
+				balloonContent: shaurmaShop.htmlBalloonContent
 			}, {
-				iconImageHref: 'http://avatars.yandex.net/get-avatar/3156681/3242aafbd6f41f88a8783a56d04091e7.3908-middle',
+				iconImageHref: 'http://shaurmap.local/shaurmap/img/shop.png',
 				iconImageSize: [20, 20],
 				iconImageOffset: [-10, -10],
 				hideIconOnBalloonOpen: false
@@ -31,3 +38,5 @@ function initShaurmap() {
 		map.geoObjects.add(placemark);
 	}
 }
+
+
