@@ -1,0 +1,8 @@
+<?php
+
+generatePassword($login, $password)
+{
+
+}
+
+?>
