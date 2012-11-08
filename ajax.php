@@ -20,8 +20,8 @@
 			<h3>AJAX request test page</h3>
 			<div class="input-prepend input-append">
 				<span class="add-on">URL</span>
-				<input id="page-url" class="span8" type="url" value="http://" placeholder="URL" />
-				<span class="add-on">URL</span>
+				<input id="page-url" class="span8" type="url" value="http://localhost/shaurmap/php/reg.php" placeholder="URL" />
+				<span class="add-on">ХУЙ</span>
 			</div>
 			<div id="kv-list">
 				<div class="key-val">
@@ -57,16 +57,44 @@
 					kv.find('input').val('');
 					$(this).closest('.key-val').after(kv);
 				});
-				
+
 				$('.remove-btn').live('click', function() {
 					$(this).closest('.key-val').remove();
 				});
 				
 				$('.btn-send-request').click(function() {
 					var params = getRequestParams();
+                    var query = getRequestQuery(params);
+
+                    console.log(query);
 					console.log(params);
+
+                    $.ajax({
+                        url: params.url,
+                        type: 'POST',
+                        data: query,
+                        success: function(data) {
+                            debug.val('');
+                            debug.val(data);
+                            console.log(data);
+                        },
+                        error: function(e) {
+                            console.log(e.message);
+                        }
+                    });
 				});
-				
+
+                var getRequestQuery = function (params) {
+                    var q = '';
+
+                    for(var i = 0; i < params.key.length; i++)
+                        q += params.key[i] + '=' + params.value[i] + '&';
+
+                    q = q.substr(0, q.length - 1);
+
+                    return q;
+                };
+
 				var getRequestParams = function() {
 					var params = { url: '', key: [], value: [] };
 					
