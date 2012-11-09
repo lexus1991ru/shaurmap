@@ -6,7 +6,6 @@ var shaurmaShop = {
 	name: 'Шаурма на средном',
 	desc: 'Самая четкая шаурма в Нижнем! Отвечаю!',
 	htmlBalloonContent: $('#balloon').html()
-	
 }
 
 var debug = true;
@@ -44,7 +43,7 @@ function initShaurmap() {
 				balloonContent: shaurmaShop.htmlBalloonContent,
                 hintContent: 'я хочу, чтоб ты меня нажал'
 			}, {
-				iconImageHref: 'http://shaurmap/shaurmap/img/shop.png',
+				iconImageHref: 'img/shop.png',
 				iconImageSize: [20, 20],
 				iconImageOffset: [-10, -10],
 				hideIconOnBalloonOpen: false

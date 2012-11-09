@@ -1,4 +1,4 @@
-/*!
+/*
  * Bootstrap v2.2.1
  *
  * Copyright 2012 Twitter, Inc
@@ -160,7 +160,7 @@ textarea {
 
 body {
   margin: 0;
-  font-family: "Verdana", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "sans-serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 20px;
   color: #333333;
@@ -3049,7 +3049,7 @@ button.close {
   padding: 4px 12px;
   margin-bottom: 0;
   *margin-left: .3em;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
   *line-height: 20px;
   color: #333333;
@@ -3507,19 +3507,19 @@ input[type="submit"].btn.btn-mini {
 
 .btn-group > .btn,
 .btn-group > .dropdown-menu {
-  font-size: 14px;
-}
-
-.btn-group > .btn-mini {
-  font-size: 11px;
-}
-
-.btn-group > .btn-small {
   font-size: 12px;
 }
 
+.btn-group > .btn-mini {
+  font-size: 10px;
+}
+
+.btn-group > .btn-small {
+  font-size: 11px;
+}
+
 .btn-group > .btn-large {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .btn-group > .btn:first-child {
@@ -4619,7 +4619,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-inverse .nav .active > a:hover,
 .navbar-inverse .nav .active > a:focus {
   color: #ffffff;
-  background-color: #111111;
+  background-color: rgba(40, 40, 40, 0.35);
 }
 
 .navbar-inverse .navbar-link {
@@ -4639,7 +4639,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
 .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
   color: #ffffff;
-  background-color: #111111;
+  background-color: rgba(40, 40, 40, 0.35);
 }
 
 .navbar-inverse .nav li.dropdown > .dropdown-toggle .caret {
