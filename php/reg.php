@@ -8,11 +8,29 @@ $supportedRequests = array(
                                                 $username = $_POST[$pars[0]];
                                                 $dbConn = new WrapperDB();
                                                 $res = $dbConn->checkUser($username);
-                                                echo json_encode("RESPONSE ".$res);
+                                                echo json_encode($res);
                                             }
                                             ),
-                        "checkmail" => array("mail"),
-                        "register" => array("mail", "pass1", "pass2")
+                        "checkmail" => array(
+                                            array("mail"),
+                                            function($pars)
+                                            {
+                                                $mail = $_POST[$pars[0]];
+                                                $dbConn = new WrapperDB();
+                                                $res = $dbConn->checkMail($mail);
+                                                echo json_encode($res);
+                                            }
+                        "register" => array(
+                                            array("mail", "pass1", "pass2"),
+                                            function ($pars)
+                                            {
+                                                $mail = $_POST[$pars[0]];
+                                                $pass1 = $_POST[$pars[1]];
+                                                $pass2 = $_POST[$pars[2]];
+                                                // check parameters
+                                                // add to database
+                                                // send message
+                                            }
                      );
 
 if(isset($_POST))
