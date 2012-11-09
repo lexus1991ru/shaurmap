@@ -19,7 +19,6 @@ function initShaurmap() {
 		zoom: 12,
 		behaviors: ['drag', 'scrollZoom']
 	});
-        //some shit
     var currentLocation = new ymaps.Placemark([ymaps.geolocation.latitude, ymaps.geolocation.longitude],{
         balloonContentHeader: ymaps.geolocation.country,
         balloonContent: ymaps.geolocation.city,
