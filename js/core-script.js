@@ -6,7 +6,6 @@ var shaurmaShop = {
 	name: 'Шаурма на средном',
 	desc: 'Самая четкая шаурма в Нижнем! Отвечаю!',
 	htmlBalloonContent: $('#balloon').html()
-	
 }
 
 function initShaurmap() {
@@ -29,7 +28,7 @@ function initShaurmap() {
 		placemark = new ymaps.Placemark([56.25 + latitude, 43.85 + longitude], {
 				balloonContent: shaurmaShop.htmlBalloonContent
 			}, {
-				iconImageHref: 'http://shaurmap.local/shaurmap/img/shop.png',
+				iconImageHref: 'img/shop.png',
 				iconImageSize: [20, 20],
 				iconImageOffset: [-10, -10],
 				hideIconOnBalloonOpen: false

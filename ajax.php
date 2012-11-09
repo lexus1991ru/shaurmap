@@ -18,10 +18,9 @@
     <body>
 		<div id="wrapper">
 			<h3>AJAX request test page</h3>
-			<div class="input-prepend input-append">
+			<div class="input-prepend">
 				<span class="add-on">URL</span>
 				<input id="page-url" class="span8" type="url" value="http://localhost/shaurmap/php/reg.php" placeholder="URL" />
-				<span class="add-on">ХУЙ</span>
 			</div>
 			<div id="kv-list">
 				<div class="key-val">
@@ -40,6 +39,10 @@
 				</div>
 			</div>
 			<br>
+			<div id="request-type" class="btn-group" data-toggle="buttons-radio">
+		  		<button type="button" class="btn btn-large active">POST</button>
+	  			<button type="button" class="btn btn-large">GET</button>
+			</div>
 			<div class="btn-send-request btn btn-large btn-info">Send AJAX request</div>
 			<h3>Debug info</h3>
 			<div>
@@ -65,13 +68,14 @@
 				$('.btn-send-request').click(function() {
 					var params = getRequestParams();
                     var query = getRequestQuery(params);
+					var requetType = $('#request-type').find('.btn.active').text();
 
                     console.log(query);
 					console.log(params);
 
                     $.ajax({
                         url: params.url,
-                        type: 'POST',
+                        type: requetType,
                         data: query,
                         success: function(data) {
                             debug.val('');
