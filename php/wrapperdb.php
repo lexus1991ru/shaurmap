@@ -2,6 +2,7 @@
 
 require_once("types.php");
 require_once("settings.php");
+require_once("common.php");
 
 class WrapperDB
 {
@@ -10,7 +11,7 @@ class WrapperDB
 
     function __construct()
     {
-        $this->settings = new DBSettings();
+        //$this->settings = new DBSettings();
         if(!$this->Connect())
         {
             die("Connection failed!");
@@ -24,7 +25,8 @@ class WrapperDB
 
     function Connect()
     {
-        $this->connection = new mysqli($this->settings->getHost(), $this->settings->getLogin(), $this->settings->getPassword(), $this->settings->getBase());
+        //$this->connection = new mysqli($this->settings->getHost(), $this->settings->getLogin(), $this->settings->getPassword(), $this->settings->getBase());
+        $this->connection = new mysqli(DBSettings::getHost(), DBSettings::getLogin(), DBSettings::getPassword(), DBSettings::getBase());
         if($this->connection->connect_errno)
         {
             return false;
@@ -92,8 +94,92 @@ class WrapperDB
         }
     }
 
+    function submitActivationRequest($email, $password)
+    {
+        /*
+        @ Return codes:
+        @ 0 - Ok
+        @ 1 - Bad email
+        @ n - MySQL Error
+        */
+
+        if(!$this->checkMail($email))
+        {
+            $key = generateActivationKey();
+            $email = $this->connection->real_escape_string($email);
+            $password = generatePassword($email, $password);
+            $query = "INSERT INTO regactivations(activationID, activationKey, email, password, registerTime, activated)".
+                     " VALUES (NULL,'".$key."','".$email."','".$password."', FROM_UNIXTIME('".time()."'), '0')";
+            $this->connection->query($query);
+            return $this->connection->errno;
+        }
+        return 1;
+    }
+
+    function checkActivationLink($email, $key)
+    {
+        $key = $this->connection->real_escape_string($key);
+        $email = $this->connection->real_escape_string($email);
+        $query = "SELECT activated FROM regactivations WHERE activationKey='".$key."' AND email='".$email."'";
+        $result = $this->connection->query($query);
+        if($result->num_rows)
+        {
+            $row = $result->fetch_assoc();
+            if($row['activated'])
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return true;
+    }
+
+    function confirmActivation($email, $key, $login)
+    {
+        $key = $this->connection->real_escape_string($key);
+        $email = $this->connection->real_escape_string($email);
+        $login = $this->connection->real_escape_string($login);
+        $query = "SELECT activationID, activated, password FROM regactivations WHERE activationKey='".$key."' AND email='".$email."'";
+        $result = $this->connection->query($query);
+        if($result->num_rows)
+        {
+            $row = $result->fetch_assoc();
+            if(!$row['activated'])
+            {
+                $activId = $row['activationID'];
+                $password = $row['password'];
+                $query = "INSERT INTO users (userID, userName, email, password, cityID, registerDate, vk_placeholder)".
+                         " VALUES (NULL, '".$login."', '".$email."', '".$password."', NULL, DATE(FROM_UNIXTIME('".time()."')), NULL)";
+                $result = $this->connection->query($query);
+                if($this->connection->errno)
+                {
+                    return $this->connection->errno;
+                }
+                $query = "UPDATE regactivations SET activated = '1' WHERE activationID = '".$activId."'";
+                $result = $this->connection->query($query);
+                if($this->connection->errno)
+                {
+                    return $this->connection->errno;
+                }
+            }
+        }
+        else
+        {
+            return true;
+        }
+        return 0;
+    }
+
     function checkUser($username)
     {
+        $username = trim($username);
+        if(!validateUser($username))
+        {
+            return false;
+        }
         $query = "SELECT userID FROM users WHERE userName='".$this->connection->real_escape_string($username)."'";
         $result = $this->connection->query($query);
         if($result->num_rows)
@@ -108,16 +194,33 @@ class WrapperDB
 
     function checkMail($email)
     {
+        /*
+        @ Return codes:
+        @ 0 - Email is not used in our database
+        @ 1 - Email is already registered
+        @ 2 - Email in process of registration
+        @ 3 - Bad email format
+        */
+
+        $email = trim($email);
+        if(!validateMail($email))
+        {
+            return 3;
+        }
         $query = "SELECT userID FROM users WHERE email='".$this->connection->real_escape_string($email)."'";
         $result = $this->connection->query($query);
         if($result->num_rows)
         {
-            return true;
+            return 1;
         }
-        else
+
+        $query = "SELECT activationID FROM regactivations WHERE email='".$this->connection->real_escape_string($email)."'";
+        $result = $this->connection->query($query);
+        if($result->num_rows)
         {
-            return false;
+            return 2;
         }
+        return 0;
     }
 
     function getMarkets()
