@@ -17,6 +17,11 @@ class WrapperDB
         }
     }
 
+    function __destruct()
+    {
+        $this->Disconnect();
+    }
+
     function Connect()
     {
         $this->connection = new mysqli($this->settings->getHost(), $this->settings->getLogin(), $this->settings->getPassword(), $this->settings->getBase());

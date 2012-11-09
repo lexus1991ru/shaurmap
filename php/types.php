@@ -1,5 +1,20 @@
 <?php
 
+class MyError
+{
+    private $message;
+
+    function __construct($msg)
+    {
+        $this->message = $msg;
+    }
+
+    function getMessage()
+    {
+        return $this->message;
+    }
+}
+
 class City
 {
     private $id;

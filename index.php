@@ -1,15 +1,18 @@
 <?php
 require_once("php/wrapperdb.php");
-$a = new WrapperDB();
+//$a = new WrapperDB();
 
-$a->Connect();
+//$a->Connect();
 
 //$a->getCities();
 //$a->getMarkets();
 //$a->checkUser("Admin", "Qq12345");
 
-print_r($a->getMarketDesc(1));
+//print_r($a->getMarketDesc(1));
 
-$a->Disconnect();
+//$a->Disconnect();
+
+$a = array(function (){echo "A";} );
+$a[0]();
 
 ?>
