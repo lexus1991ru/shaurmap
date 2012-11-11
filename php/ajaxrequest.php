@@ -2,6 +2,7 @@
 
 require_once("settings.php");
 require_once("common.php");
+require_once("errors.php");
 
 class AjaxRequest
 {
@@ -27,49 +28,49 @@ class AjaxRequest
                                     {
                                         if(!is_string($par))
                                         {
-                                            echo "Parameter ".$par." must be a string";
+                                            json_response(ERRORS::INTERNAL_ERROR, "Parameter ".$par." must be a string");
                                             return false;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    echo "Request parameters in body must be in array";
+                                    echo json_response(ERRORS::INTERNAL_ERROR, "Request parameters in body must be in array");
                                     return false;
                                 }
                                 if(!is_bool($val[1]))
                                 {
-                                    echo "HTTP method type for request ". $key ." is not bool";
+                                    echo json_response(ERRORS::INTERNAL_ERROR, "HTTP method type for request ". $key ." is not bool");
                                     return false;
                                 }
                                 if(!is_callable($val[2]))
                                 {
-                                    echo "Request function in body is not a function";
+                                    echo json_response(ERRORS::INTERNAL_ERROR, "Request function in body is not a function");
                                     return false;
                                 }
                             }
                             else
                             {
-                                echo "Body for request ".$key." array must have size 2";
+                                echo json_response(ERRORS::INTERNAL_ERROR, "Body for request ".$key." array must have size 2");
                                 return false;
                             }
                         }
                         else
                         {
-                            echo "Body for request ".$key." must be an array";
+                            echo json_response(ERRORS::INTERNAL_ERROR, "Body for request ".$key." must be an array");
                             return false;
                         }
                     }
                     else
                     {
-                        echo "Request name be a string";
+                        echo json_response(ERRORS::INTERNAL_ERROR, "Request name be a string");
                         return false;
                     }
                 }
             }
             else
             {
-                echo "Requests array is not an array";
+                echo json_response(ERRORS::INTERNAL_ERROR, "Requests array is not an array");
                 return false;
             }
         }
@@ -110,59 +111,17 @@ class AjaxRequest
             {
                 if(!isset($req[$par]))
                     {
-                        echo json_response(500, "Parameter '".$par."' not found for request '".$requestName."'");
+                        echo json_response(ERRORS::INTERNAL_ERROR, "Parameter '".$par."' not found for request '".$requestName."'");
                         return;
                     }
             }
             $func($pars);
-        } else {
-            echo json_response(500, "Unknown request ".$requestName);
         }
-    }
-}
-
-
-/*
-Slow idea
-class Request
-{
-    private $name;
-    private $parameters;
-    private $function;
-
-    function validateParameters($pars)
-    {
-        return true;
-    }
-
-    function __construct($_name)
-    {
-        this->$name = $_name;
-    }
-
-    function getName()
-    {
-        return this->$name;
-    }
-
-    function setParameters()
-    {   if(validateParameters)
+        else
         {
-            this->$parameters =
+            echo json_response(ERRORS::INTERNAL_ERROR, "Unknown request ".$requestName);
         }
     }
-     "checkuser" => array(
-                                            array("username"),
-                                            function ($pars)
-                                            {
-                                                $username = $_POST[$pars[0]];
-                                                $dbConn = new WrapperDB();
-                                                $res = $dbConn->checkUser($username);
-                                                echo json_response(200, $res);
-                                            }
 }
-*/
-
-
 
 ?>
