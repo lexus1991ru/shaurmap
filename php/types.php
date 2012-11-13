@@ -117,14 +117,14 @@ class MarketDesc
 
 class Comment
 {
-    private $commentID;
-    private $marketID;
-    private $userID;
-    private $commentTime;
-    private $text;
-    private $mark;
-    private $photos;
-    private $approved;
+    public $commentID;
+    public $marketID;
+    public $userID;
+    public $commentTime;
+    public $text;
+    public $mark;
+    public $photos;
+    public $approved;
 
     function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
                          $_mark, $_photos, $_approved)

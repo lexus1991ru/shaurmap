@@ -46,6 +46,14 @@ function generatePassword($mail, $pass)
     return sha1($passSha1.$salt);
 }
 
+function generateSession($mail, $login)
+{
+    $mail = trim($mail);
+    $pass = trim($pass);
+    $rnd  = rand();
+    return sha1($mail.$rnd).sha1($pass.$rnd);
+}
+
 function generateActivationKey()
 {
    return sha1(time().md5(rand()));

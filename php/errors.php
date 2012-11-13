@@ -20,6 +20,15 @@ class ERRORS
     const ACTIVATION_CONFIRMED = 14;
     const UNKNOWN_GET_REQUEST = 15;
     const UNKNOWN_POST_REQUEST = 16;
+    const BAD_USERNAME_OR_PASSWORD = 17;
+    const LOGIN_MYSQL_ERROR = 18;
+    const CHECK_TOKEN_MYSQL_ERROR = 19;
+    const BAD_TOKEN_ERROR = 20;
+    const SESSION_EXPIRED_ERROR = 21;
+    const POST_COMMENT_MYSQL_ERROR = 22;
+    const BAD_COMMENT_LENGTH = 23;
+    const BAD_MARKET_MARK = 24;
+    const GET_COMMENTS_MYSQL_ERROR = 25;
 
     static public $serverMsg = array
     (
@@ -39,7 +48,16 @@ class ERRORS
         self::PASSWORDS_NOT_EQUAL => array("Passwords is not equal", "Пароли не совпадают"),
         self::ACTIVATION_CONFIRMED => array("Activation confirmed", "Активация аккаунта завершена!"),
         self::UNKNOWN_GET_REQUEST => array("Unknown GET request", ""),
-        self::UNKNOWN_POST_REQUEST => array("Unknown POST request", "")
+        self::UNKNOWN_POST_REQUEST => array("Unknown POST request", ""),
+        self::BAD_USERNAME_OR_PASSWORD => array("Bad username or password", "Неверное имя пользователя или пароль"),
+        self::LOGIN_MYSQL_ERROR => array("Mysql error in loginUser function", ""),
+        self::CHECK_TOKEN_MYSQL_ERROR => array("Mysql error in checkToken function", ""),
+        self::BAD_TOKEN_ERROR => array("Bad token received from user", ""),
+        self::SESSION_EXPIRED_ERROR => array("Session expired", "К сожалению время вашей сессии истекло"),
+        self::POST_COMMENT_MYSQL_ERROR => array("Mysql error in postComment function", ""),
+        self::BAD_COMMENT_LENGTH => array("Bad comment lenght", ""),
+        self::BAD_MARKET_MARK => array("Bad market mark", ""),
+        self::GET_COMMENTS_MYSQL_ERROR => array("Mysql error in getComments* function", "")
     );
 }
 

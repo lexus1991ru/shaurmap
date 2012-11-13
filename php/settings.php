@@ -33,7 +33,18 @@ class ServerSettings
     private static $maxUsernameLength = 32;
     private static $minUsernameLenght = 3;
     private static $maxPasswordLenght = 32;
-    private static $minPasswordLenght =6;
+    private static $minPasswordLenght = 6;
+    private static $sessionLiveTime = 2592000;// 60*60*24*30 = 30 days
+    private static $maxMarketMark = 5;
+    private static $maxCommentLength = 2000;
+    private static $minCommentLength = 0;
+    private static $maxCommentsForMarket = 10;
+
+
+    function getSessionLiveTime()
+    {
+        return self::$sessionLiveTime;
+    }
 
     function getApprovedUsernameSymbols()
     {
@@ -58,6 +69,26 @@ class ServerSettings
     function getMinPasswordLenght()
     {
         return self::$minPasswordLenght;
+    }
+
+    function getMaxMarketMark()
+    {
+        return self::$maxMarketMark;
+    }
+
+    function getMinCommentLength()
+    {
+        return self::$minCommentLength;
+    }
+
+    function getMaxCommentLength()
+    {
+        return self::$maxCommentLength;
+    }
+
+    function getmaxCommentsForMarket()
+    {
+        return self::$maxCommentsForMarket;
     }
 }
 

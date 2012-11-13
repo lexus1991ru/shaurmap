@@ -14,7 +14,36 @@ function requestLogin($pars)
     {
         $dbConn = new WrapperDB();
         $res = $dbConn->loginUser($login, $password);
-        echo json_response($res);
+        if($res == ERRORS::NO_ERROR)
+        {
+            echo json_response($res, $dbConn->getData());
+        }
+        else
+        {
+            echo json_response($res);
+        }
+    }
+    else
+    {
+        echo json_response(ERRORS::INTERNAL_ERROR, "Fuck you idiot");
+    }
+}
+
+function requestLogout($pars)
+{
+    $token = $_POST[$pars[0]];
+    if(strlen($token < 80))
+    {
+        $dbConn = new WrapperDB();
+        $res = $dbConn->logout($token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            echo json_response($res);
+        }
+        else
+        {
+            echo json_response($res);
+        }
     }
     else
     {
@@ -27,6 +56,11 @@ $supportedRequests = array(
         array("login", "password"),
         true,
         requestLogin
+    ),
+    "logout" => array(
+        array("token"),
+        true,
+        requestLogout
     ),
 );
 

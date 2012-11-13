@@ -41,16 +41,9 @@ function requestRegister($pars)
     $pass2 = $_POST[$pars[2]];
     if (md5($pass1) == md5($pass2)) {
         if(validatePass($pass1)){
-            if (!validateMail($mail))
-            {
-                echo json_response(ERRORS::EMAIL_BAD_FORMAT);
-            }
-            else
-            {
-                $dbConn = new WrapperDB();
-                $result = $dbConn->submitActivationRequest($mail, $pass1);
-                echo json_response($result);
-            }
+            $dbConn = new WrapperDB();
+            $result = $dbConn->submitActivationRequest($mail, $pass1);
+            echo json_response($result);
         }
         else
         {
