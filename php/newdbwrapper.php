@@ -278,7 +278,7 @@ class WrapperDB
 
     // ---------------------
 
-    function checkToken($userID, $token)
+    private function checkToken($userID, $token)
     {
         $userID = $this->connection->real_escape_string($userID);
         $token = $this->connection->real_escape_string($token);
@@ -306,7 +306,26 @@ class WrapperDB
         return ERRORS::BAD_TOKEN_ERROR;
     }
 
-    // ---------------------
+    private function getUserRights($userID)
+    {
+        // 0 - User
+        // 1 - Admin
+        // 2 - Moderator
+        $userID = $this->connection->real_escape_string($userID);
+        $query = "SELECT permission FROM permissions WHERE userID='".$userID."'";
+
+        $result = $this->connection->query($query);
+        if($this->connection->errno)
+            return 0;
+
+        if($result->num_rows)
+        {
+            $row = $result->fetch_assoc();
+            return $row['permission'];
+        }
+        return 0;
+
+    }
 
     // --------------------------------------- Comment block --------------------------------------
 
@@ -348,7 +367,7 @@ class WrapperDB
         }
     }
 
-    function getCommentsByMarketID($marketID, $start, $count)
+    function getCommentsByMarketID($marketID, $start, $count, $token, $userID)
     {
         $marketID = $this->connection->real_escape_string($marketID);
         $start = $this->connection->real_escape_string($start);
@@ -361,13 +380,31 @@ class WrapperDB
 
         if($result->num_rows)
         {
+            $userRights = 0;
+            if((strlen($userID) > 0) && (strlen($token) == ServerSetting::getTokenLength()))
+            {
+                if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
+                {
+                    $userRights = $this->getUserRights($userID);
+                }
+            }
             $comments = array();
             for($i = 0; $i < $result->num_rows; $i++)
             {
                 $row = $result->fetch_assoc();
-                $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
-                                       $row['commentTime'], utf8_decode($row['text']), $row['mark'],
-                                       $row['photos'], $row['approved']);
+                $comment = NULL;
+                if(($userRights == 1) || ($userRights == 2))
+                {
+                    $comment = new CommentAdmin($row['commentID'], $row['marketID'], $row['userID'],
+                                           $row['commentTime'], utf8_decode($row['text']), $row['mark'],
+                                           $row['photos'], $row['approved']);
+                }
+                else
+                {
+                    $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
+                                           $row['commentTime'], utf8_decode($row['text']), $row['mark'],
+                                           $row['photos']);
+                }
                 $comments[$i] = $comment;
             }
             print_r($comments);

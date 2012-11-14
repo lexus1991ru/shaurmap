@@ -16,6 +16,7 @@ function validateUser($username)
 {
     // TODO: use approved symbols for checking username
     $username = trim($username);
+    echo $username;
     if ((strlen($username) < ServerSettings::getMinUsernameLenght()) || (strlen($username) > ServerSettings::getMaxUsernameLength()))
     {
         return false;
@@ -46,7 +47,7 @@ function generatePassword($mail, $pass)
     return sha1($passSha1.$salt);
 }
 
-function generateSession($mail, $login)
+function generateSession($mail, $pass)
 {
     $mail = trim($mail);
     $pass = trim($pass);
@@ -75,13 +76,13 @@ function json_response($errcode, $data = NULL)
     {
         echo json_encode(array("status" => $errcode, "data" => $data));
     }
-    else if ($errcode == ERRORS::INTERNAL_ERROR && ServerSettings::$showDebugInfo)
+    else if ($errcode == ERRORS::INTERNAL_ERROR && ServerSettings::getShowDebugInfo())
     {
         echo json_encode(array("status" => $errcode, "data" => $data));
     }
     else
     {
-        if(ServerSettings::$showDebugInfo)
+        if(ServerSettings::getShowDebugInfo())
         {
             echo json_encode(array("status" => $errcode, "data" => ERRORS::$serverMsg[$errcode][0]));
         }

@@ -37,7 +37,7 @@ class ERRORS
         self::EMAIL_BAD_FORMAT => array("Email has bad format", "Неверный формат email"),
         self::EMAIL_ALREADY_USED => array("Email already used", "Данный email уже используется"),
         self::EMAIL_ALREADY_USED_REG => array("Email already used in registration", "Данный email находится в процессе регистрации и не подтвержден"),
-        self::LOGIN_BAD_FORMAT => array("Usename has bad format", "СОСИ ХУЙ С ЛОГИНОМ"),
+        self::LOGIN_BAD_FORMAT => array("Username has bad format", "СОСИ ХУЙ С ЛОГИНОМ"),
         self::LOGIN_ALREADY_USED => array("Username already used", "Пользователь с данным именем уже зарегистрирован"),
         self::ACTIVATION_REQUEST_MYSQL_ERROR => array("Mysql error in submitActivationRequest function", ""),
         self::ACTIVATION_LINK_MYSQL_ERROR => array("Mysql error in checkActivationLink function", ""),

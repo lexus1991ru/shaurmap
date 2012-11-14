@@ -28,7 +28,7 @@ class DBSettings {
 
 class ServerSettings
 {
-    public static $showDebugInfo = true;
+    private static $showDebugInfo = true;
     private static $approvedUsernameSymbols = "abcdefghijklmnopqrstuvwxyz0123456789_";
     private static $maxUsernameLength = 32;
     private static $minUsernameLenght = 3;
@@ -39,7 +39,17 @@ class ServerSettings
     private static $maxCommentLength = 2000;
     private static $minCommentLength = 0;
     private static $maxCommentsForMarket = 10;
+    private static $tokenLength = 80;
 
+    function getShowDebugInfo()
+    {
+        return self::$showDebugInfo;
+    }
+
+    function getTokenLength()
+    {
+        return self::$tokenLength;
+    }
 
     function getSessionLiveTime()
     {

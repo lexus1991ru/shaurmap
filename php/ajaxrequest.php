@@ -10,7 +10,7 @@ class AjaxRequest
 
     private function validateRequests($reqs)
     {
-        if(ServerSettings::$showDebugInfo)
+        if(ServerSettings::getShowDebugInfo())
         {
             if(is_array($reqs))
             {

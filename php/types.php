@@ -124,10 +124,9 @@ class Comment
     public $text;
     public $mark;
     public $photos;
-    public $approved;
 
     function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
-                         $_mark, $_photos, $_approved)
+                         $_mark, $_photos)
     {
         $this->commentID =   $_commentID;
         $this->marketID =    $_marketID;
@@ -136,16 +135,20 @@ class Comment
         $this->text =        $_text;
         $this->mark =        $_mark;
         $this->photos =      $_photos;
+    }
+}
+
+class CommentAdmin extends Comment
+{
+    public $approved;
+    function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
+                     $_mark, $_photos, $_approved)
+    {
+        parent::__contruct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
+                           $_mark, $_photos);
         $this->approved =    $_approved;
     }
-
-    function getMarketDesc()
-    {
-        return array("commentID" => $this->commentID, "marketID" => $this->marketID,
-                      "userID" => $this->userID, "commentTime" => $this->commentTime,
-                      "text" => $this->text, "mark" => $this->mark,
-                      "photos" => $this->photos, "approved" => $this->approved);
-    }
-
 }
+
+
 ?>
