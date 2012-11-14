@@ -13,7 +13,7 @@ function requestPostComment($pars)
     $mark = $_POST[$pars[2]];
     $text = $_POST[$pars[3]];
     $token = $_POST[$pars[4]];
-    $dbConn = new WrapperDB();
+    $dbConn = new WrapperDBComments();
     $res = $dbConn->postComment($marketID, $userID, $mark, $text, $token);
     echo json_response($res);
 }
@@ -25,7 +25,7 @@ function requestMarketComments($pars)
     $count = $_POST[$pars[2]];
     $token = $_POST[$pars[3]];
     $userID = $_POST[$pars[4]];
-    $dbConn = new WrapperDB();
+    $dbConn = new WrapperDBComments();
     $res = $dbConn->getCommentsByMarketID($marketID, $start, $count, $token, $userID);
     if($res == ERRORS::NO_ERROR)
     {
