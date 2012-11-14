@@ -381,12 +381,9 @@ class WrapperDB
         if($result->num_rows)
         {
             $userRights = 0;
-            if((strlen($userID) > 0) && (strlen($token) == ServerSetting::getTokenLength()))
+            if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
             {
-                if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
-                {
-                    $userRights = $this->getUserRights($userID);
-                }
+                $userRights = $this->getUserRights($userID);
             }
             $comments = array();
             for($i = 0; $i < $result->num_rows; $i++)

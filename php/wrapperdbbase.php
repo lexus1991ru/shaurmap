@@ -57,7 +57,7 @@ class WrapperDBBase
         }
     }
 
-    protected function getData()
+    public function getData()
     {
         if($this->data != NULL)
         {
