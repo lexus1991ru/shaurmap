@@ -67,30 +67,36 @@ class WrapperDBBase
 
     protected function checkToken($userID, $token)
     {
-        $userID = $this->connection->real_escape_string($userID);
-        $token = $this->connection->real_escape_string($token);
-        $query = "SELECT sessionID, UNIX_TIMESTAMP(createdTime) as createdTime FROM sessions WHERE sessionKey='".$token."' AND userID = '".$userID."'";
-        $result = $this->connection->query($query);
-        if($this->connection->errno)
-            return ERRORS::CHECK_TOKEN_MYSQL_ERROR;
-        if($result->num_rows)
+        if((strlen($userID) > 0) && (strlen($token) == ServerSetting::getTokenLength()))
         {
-            $row = $result->fetch_assoc();
-            $ts = time();
-            if(($ts - $row['createdTime'] > ServerSettings::getSessionLiveTime()) || $row['closed'])
+            $userID = $this->connection->real_escape_string($userID);
+            $token = $this->connection->real_escape_string($token);
+            $query = "SELECT sessionID, UNIX_TIMESTAMP(createdTime) as createdTime FROM sessions WHERE sessionKey='".$token."' AND userID = '".$userID."'";
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::CHECK_TOKEN_MYSQL_ERROR;
+            if($result->num_rows)
             {
-                return ERRORS::SESSION_EXPIRED_ERROR;
-            }
-            else
-            {
-                $query = "UPDATE sessions SET lastLogin=FROM_UNIXTIME('".$ts."') WHERE sessionID='".$row['sessionID']."'";
-                $result = $this->connection->query($query);
-                if($this->connection->errno)
-                    return ERRORS::CHECK_TOKEN_MYSQL_ERROR;
-                return ERRORS::NO_ERROR;
+                $row = $result->fetch_assoc();
+                $ts = time();
+                if(($ts - $row['createdTime'] > ServerSettings::getSessionLiveTime()) || $row['closed'])
+                {
+                    return ERRORS::SESSION_EXPIRED_ERROR;
+                }
+                else
+                {
+                    $query = "UPDATE sessions SET lastLogin=FROM_UNIXTIME('".$ts."') WHERE sessionID='".$row['sessionID']."'";
+                    $result = $this->connection->query($query);
+                    if($this->connection->errno)
+                        return ERRORS::CHECK_TOKEN_MYSQL_ERROR;
+                    return ERRORS::NO_ERROR;
+                }
             }
         }
-        return ERRORS::BAD_TOKEN_ERROR;
+        else
+        {
+            return ERRORS::BAD_TOKEN_ERROR;
+        }
     }
 
     protected function getUserRights($userID)

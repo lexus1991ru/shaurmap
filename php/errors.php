@@ -29,6 +29,7 @@ class ERRORS
     const BAD_COMMENT_LENGTH = 23;
     const BAD_MARKET_MARK = 24;
     const GET_COMMENTS_MYSQL_ERROR = 25;
+    const RANK_COMMENT_MYSQL_ERROR = 26;
 
     static public $serverMsg = array
     (
@@ -57,7 +58,8 @@ class ERRORS
         self::POST_COMMENT_MYSQL_ERROR => array("Mysql error in postComment function", ""),
         self::BAD_COMMENT_LENGTH => array("Bad comment lenght", ""),
         self::BAD_MARKET_MARK => array("Bad market mark", ""),
-        self::GET_COMMENTS_MYSQL_ERROR => array("Mysql error in getComments* function", "")
+        self::GET_COMMENTS_MYSQL_ERROR => array("Mysql error in getComments* function", ""),
+        self::RANK_COMMENT_MYSQL_ERROR => array("Mysql error in rankComment function", "")
     );
 }
 

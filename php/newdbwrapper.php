@@ -367,6 +367,31 @@ class WrapperDB
         }
     }
 
+    function rankComment($commentID, $isThumbsUp, $token, $userID)
+    {
+        $commentID = $this->connection->real_escape_string($commentID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $query = "";
+            if($isThumbsUp)
+            {
+                $query = "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'";
+            }
+            else
+            {
+                $query = "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'";
+            }
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::GET_COMMENT_MYSQL_ERROR;
+        }
+        else
+        {
+            return $res;
+        }
+    }
+
     function getCommentsByMarketID($marketID, $start, $count, $token, $userID)
     {
         $marketID = $this->connection->real_escape_string($marketID);
@@ -381,12 +406,9 @@ class WrapperDB
         if($result->num_rows)
         {
             $userRights = 0;
-            if((strlen($userID) > 0) && (strlen($token) == ServerSetting::getTokenLength()))
+            if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
             {
-                if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
-                {
-                    $userRights = $this->getUserRights($userID);
-                }
+                $userRights = $this->getUserRights($userID);
             }
             $comments = array();
             for($i = 0; $i < $result->num_rows; $i++)
