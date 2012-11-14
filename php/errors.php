@@ -30,6 +30,8 @@ class ERRORS
     const BAD_MARKET_MARK = 24;
     const GET_COMMENTS_MYSQL_ERROR = 25;
     const RANK_COMMENT_MYSQL_ERROR = 26;
+    const PERMISSION_DENIED = 27;
+    const DELETE_COMMENT_MYSQL_ERROR = 28;
 
     static public $serverMsg = array
     (
@@ -59,7 +61,9 @@ class ERRORS
         self::BAD_COMMENT_LENGTH => array("Bad comment lenght", ""),
         self::BAD_MARKET_MARK => array("Bad market mark", ""),
         self::GET_COMMENTS_MYSQL_ERROR => array("Mysql error in getComments* function", ""),
-        self::RANK_COMMENT_MYSQL_ERROR => array("Mysql error in rankComment function", "")
+        self::RANK_COMMENT_MYSQL_ERROR => array("Mysql error in rankComment function", ""),
+        self::PERMISSION_DENIED  => array("You have no rights to complete this operation", ""),
+        self::DELETE_COMMENT_MYSQL_ERROR => array("Mysql error in deleteComment function", "")
     );
 }
 

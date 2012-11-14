@@ -1,21 +1,56 @@
 <?php
 
 require_once("errors.php");
-require_once("newdbwrapper.php");
+require_once("wrapperdbcomments.php");
 require_once("ajaxrequest.php");
 require_once("common.php");
-require_once("settings.php");
 
-function requestPostComment($pars)
+$supportedRequests = array(
+    "marketcomments" => array(
+        array("marketid", "start", "count", "token", "userid"),
+        true,
+        requestMarketComments
+    ),
+    "usercomments" => array(
+        array("userid", "start", "count", "token"),
+        true,
+        requestUserComments
+    ),
+    "getcomment" => array(
+        array("commentid", "token", "userid"),
+        true,
+        requestComment
+    ),
+    "postcomment" => array(
+        array("marketid", "userid", "mark", "text", "token"),
+        true,
+        requestPostComment
+    ),
+    "rankcomment" => array(
+        array("commentid", "thumbsup", "token", "userid"),
+        true,
+        requestRankComment
+    ),
+    "editcomment" => array(
+        array("commentid", "token", "userid"),
+        true,
+        requestEditComment
+    ),
+    "deletecomment" => array(
+        array("commentid", "token", "userid"),
+        true,
+        requestDeleteComment
+    ),
+);
+
+function requestUserComments($pars)
 {
-    $marketID = $_POST[$pars[0]];
-    $userID = $_POST[$pars[1]];
-    $mark = $_POST[$pars[2]];
-    $text = $_POST[$pars[3]];
-    $token = $_POST[$pars[4]];
-    $dbConn = new WrapperDBComments();
-    $res = $dbConn->postComment($marketID, $userID, $mark, $text, $token);
-    echo json_response($res);
+    ;
+}
+
+function requestComment($pars)
+{
+    ;
 }
 
 function requestMarketComments($pars)
@@ -37,18 +72,38 @@ function requestMarketComments($pars)
     }
 }
 
-$supportedRequests = array(
-    "postcomment" => array(
-        array("marketid", "userid", "mark", "text", "token"),
-        true,
-        requestPostComment
-    ),
-    "marketcomments" => array(
-        array("marketid", "start", "count", "token", "userid"),
-        true,
-        requestMarketComments
-    ),
-);
+function requestPostComment($pars)
+{
+    $marketID = $_POST[$pars[0]];
+    $userID = $_POST[$pars[1]];
+    $mark = $_POST[$pars[2]];
+    $text = $_POST[$pars[3]];
+    $token = $_POST[$pars[4]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->postComment($marketID, $userID, $mark, $text, $token);
+    echo json_response($res);
+}
+
+function requestRankComment($pars)
+{
+    $commentID = $_POST[$pars[0]];
+    $isThumbsUp = $_POST[$pars[1]];
+    $token = $_POST[$pars[2]];
+    $userID = $_POST[$pars[3]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->rankComment($commentID, $isThumbsUp, $token, $userID);
+    echo json_response($res);
+}
+
+function requestEditComment($pars)
+{
+    ;
+}
+
+function requestDeleteComment($pars)
+{
+    ;
+}
 
 $ajaxRequest = new AjaxRequest($supportedRequests);
 if (count($_GET)) {

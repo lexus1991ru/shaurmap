@@ -67,7 +67,7 @@ class WrapperDBBase
 
     protected function checkToken($userID, $token)
     {
-        if((strlen($userID) > 0) && (strlen($token) == ServerSetting::getTokenLength()))
+        if((strlen($userID) > 0) && (strlen($token) == ServerSettings::getTokenLength()))
         {
             $userID = $this->connection->real_escape_string($userID);
             $token = $this->connection->real_escape_string($token);

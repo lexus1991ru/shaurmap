@@ -5,7 +5,12 @@ require_once("common.php");
 interface IWrapperDBComments
 {
     public function getCommentsByMarketID($marketID, $start, $count, $token, $userID);
+    public function getCommentsByUserID($userID, $start, $count, $token);
+    public function getCommentByID($commentID, $token, $userID);
     public function postComment($marketID, $userID, $mark, $text, $token);
+    public function rankComment($commentID, $isThumbsUp, $token, $userID);
+    public function editComment($commentID, $token, $userID);
+    public function deleteComment($commentID, $token, $userID);
 }
 
 class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
@@ -64,6 +69,16 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         return ERRORS::NO_ERROR;
     }
 
+    public function getCommentsByUserID($userID, $start, $count, $token)
+    {
+        ;
+    }
+
+    public function getCommentByID($commentID, $token, $userID)
+    {
+        ;
+    }
+
     public function postComment($marketID, $userID, $mark, $text, $token)
     {
         $res = $this->checkToken($userID, $token);
@@ -101,5 +116,63 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
             return $res;
         }
     }
-};
+
+    public function rankComment($commentID, $isThumbsUp, $token, $userID)
+    {
+        $commentID = $this->connection->real_escape_string($commentID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $query = "";
+            if($isThumbsUp)
+            {
+                $query = "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'";
+            }
+            else
+            {
+                $query = "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'";
+            }
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::RANK_COMMENT_MYSQL_ERROR;
+            return ERRORS::NO_ERROR;
+        }
+        else
+        {
+            return $res;
+        }
+    }
+
+    public function editComment($commentID, $token, $userID)
+    {
+        ;
+    }
+
+    public function deleteComment($commentID, $token, $userID)
+    {
+        $commentID = $this->connection->real_escape_string($commentID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $userRights = $this->getUserRights($userID);
+            if(($userRights == 1) || ($userRights == 2))
+            {
+                $query = "DELETE FROM comments commentID='".$commentID."'";
+                $result = $this->connection->query($query);
+                if($this->connection->errno)
+                    return ERRORS::DELETE_COMMENT_MYSQL_ERROR;
+                return ERRORS::NO_ERROR;
+            }
+            else
+            {
+                return ERRORS::PERMISSION_DENIED;
+            }
+        }
+        else
+        {
+            return $res;
+        }
+    }
+
+}
 ?>

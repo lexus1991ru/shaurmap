@@ -373,6 +373,7 @@ class WrapperDB
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
+            // TODO: Limit per day
             $query = "";
             if($isThumbsUp)
             {
@@ -385,6 +386,8 @@ class WrapperDB
             $result = $this->connection->query($query);
             if($this->connection->errno)
                 return ERRORS::GET_COMMENT_MYSQL_ERROR;
+
+            return ERRORS::NO_ERROR;
         }
         else
         {
