@@ -4,13 +4,16 @@
 
 var globalMap;
 var upperLeftCorner = [];
+var mapWidth, mapHeight;  //coordinates range between highest and lowest points(and left/right accordingly)
 var currentLocation = [];
 var placeMarkCoordinates = [];
 var displayedRoute;
+var thisPlacemark;
 var axis = {
     x: 1,
     y: 0
 }
+
 
 var shaurmaShop = {
     name: 'Шаурма на средном',
@@ -22,9 +25,6 @@ var debug = true;
 
 function globalInitialization(){
     globalMap = initShaurmap();
-    globalMap.events.add('click',function(event){
-        console.debug('changed from global');
-    });
     var mapTimer = setInterval(isUpperLeftChanged, 300);
 }
 
@@ -75,32 +75,13 @@ function initShaurmap() {
 			});
 
         placemark.events.add('click',function(e){
-            var thisPlacemark = e.get('target');
+            thisPlacemark = e.get('target');
             placeMarkCoordinates = thisPlacemark.geometry.getCoordinates();
             console.debug('Placemarkcoord '+ placeMarkCoordinates)
         });
 		Mymap.geoObjects.add(placemark);
         console.debug()
 	}
-
-
-
-   /*
-    Mymap.events.add('click',function(event){
-        console.debug('changed');
-        console.debug(placeMarkCoordinates);
-       // var somevar = event.get('newMap');
-        //somevar.getBounds();
-        //console.debug(somevar[1]);
-    });*/
-
-      /*
-     map.events.add('mapchange',function(){
-         console.debug('changed');
-         var mapData = map.getBounds();
-         console.debug(mapData[1]);
-     });*/
-
 
     /*
     * taking the coordinates of map's upper left corner.
@@ -109,9 +90,28 @@ function initShaurmap() {
     * here will get the y from upperright and x from bottomleft
     * */
     var mapcoords = Mymap.getBounds();
-
     upperLeftCorner[axis.y] = mapcoords[1][axis.y];
     upperLeftCorner[axis.x] = mapcoords[0][axis.x];
+
+
+
+
+
+    /*
+     Mymap.events.add('click',function(event){
+     console.debug('changed');
+     console.debug(placeMarkCoordinates);
+     // var somevar = event.get('newMap');
+     //somevar.getBounds();
+     //console.debug(somevar[1]);
+     });*/
+
+    /*
+     map.events.add('mapchange',function(){
+     console.debug('changed');
+     var mapData = map.getBounds();
+     console.debug(mapData[1]);
+     });*/
 
     if(debug){
         console.debug('leftBottom: '+mapcoords[0]+' rightUpper: '+mapcoords[1]);
@@ -124,13 +124,26 @@ function initShaurmap() {
 }
 
 /*
+* gets the MAP width, height and upper left corner coordinates
+* then will pass it to the server to allocate new amount of points on the map
+* */
+function getMapGeometry(){
+    var mapcoords = globalMap.getBounds();
+    console.debug('bottomleft: '+mapcoords[0][0]+' '+mapcoords[0][1]+' upperright:'+mapcoords[1][0]+' '+mapcoords[1][1]);
+    mapWidth = mapcoords[1][axis.x] - mapcoords[0][axis.x];
+    mapHeight = mapcoords[1][axis.y] - mapcoords[0][axis.y];
+    upperLeftCorner[axis.y] = mapcoords[1][axis.y];
+    upperLeftCorner[axis.x] = mapcoords[0][axis.x];
+    console.debug('width: '+ mapWidth+' height: '+ mapHeight);
+}
+
+/*
 * checks if upperleft coordinates was changed
 * */
 function isUpperLeftChanged(){
     var currentCoords = globalMap.getBounds();
     if(upperLeftCorner[axis.y]!=currentCoords[1][axis.y] && upperLeftCorner[axis.x]!=currentCoords[0][axis.x]){
-        upperLeftCorner[axis.y] = currentCoords[1][axis.y];
-        upperLeftCorner[axis.x] = currentCoords[0][axis.x];
+        getMapGeometry();
         console.log('changed');
     }
 }
@@ -140,14 +153,24 @@ function isUpperLeftChanged(){
 * */
 function getRoute(){
     if(displayedRoute){
-          /*some stuff*/
+        globalMap.geoObjects.remove(displayedRoute);
+        console.debug('removed');
     }
-    displayedRoute = new ymaps.route([[ymaps.geolocation.latitude, ymaps.geolocation.longitude],placeMarkCoordinates]).then(
+    ymaps.route([[ymaps.geolocation.latitude, ymaps.geolocation.longitude],placeMarkCoordinates]).then(
         function (route){
+            displayedRoute = route;
             globalMap.geoObjects.add(route);
         },
         function (error){
             alert('some shit just happend: '+ error.message);
         }
     );
+}
+
+/*
+* for debugging purposes. Place here any code you want to test, it will
+* run by "Debug" button
+* */
+function debug_check(){
+       getMapGeometry();
 }
