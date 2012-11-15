@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Shaurmap.ru</title>
+        <!-- Styles -->
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+		<!-- Scripts -->
+		<script src="js/jquery-1.8.2.js"></script>
+		<script src="js/jquery.tinyscrollbar.min.js"></script>
+		<!-- Web fonts -->
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&subset=latin,cyrillic">
+		<!-- Yandex map -->
+		<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU"></script>
+    </head>
+    <body onload="initShaurmap()">
+    	<div id="topnavbar" class="navbar navbar-fixed-top navbar-inverse">
+  			<div class="navbar-inner">
+			    <div class="container">
+				    <div class="nav-collapse">
+				    	<ul class="nav">
+				    		<li class="active"><a href="#" class="transition-color"><i class="icon-home icon-white"></i> Главная</a></li>
+	                    	<li><a href="#" class="transition-color"><i class="icon-star icon-white"></i> Топ-10</a></li>
+	                    	<li><a href="#" class="transition-color"><i class="icon-map-marker icon-white"></i> Новые точки</a></li>
+	                  	</ul>
+						<ul class="nav pull-right">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle transition-color" data-toggle="dropdown"><i class="icon-globe icon-white"></i> Нижний Новгород <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Москва</a></li>
+									<li><a href="#">Казань</a></li>
+									<li><a href="#">Санкт-Петербург</a></li>
+									<li class="divider"></li>
+									<li><a href="#"><i class="icon-search"></i> Уточнить</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle transition-color" data-toggle="dropdown"><i class="icon-user icon-white"></i> Nakama <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li><a href="#"><i class="icon-cog"></i> Профиль</a></li>
+									<li><a href="#"><i class="icon-star-empty"></i> Мои оценки</a></li>
+									<li class="divider"></li>
+									<li><a href="#"><i class="icon-off"></i> Выход</a></li>
+								</ul>
+							</li>
+	                	</ul>
+			   		</div>
+	    		</div>
+	  		</div>
+		</div>
+		<div id="header" class="row">
+			<div class="container">
+				<h3><img class="hide" style="15px; height: 32px;" src="img/shaurma.png"/>Shaurmap.ru - Шаурма в твоем городе!</h3>
+			</div>
+		</div>
+		<div id="wrapper" class="container">
+			<div class="row">
+		  		<div id="sidebar" class="span3">
+		  		    <!-- START: photo block -->
+                    <div class="carousel slide">
+                        <div class="carousel-inner">
+                            <div class="active item">
+                                <img alt="" class="shaurma-photo" src="img/larek3.jpg" />
+                                <div class="carousel-caption">
+                                    <div class="shaurma-info">
+                                        <p class="shaurma-name"><strong>Шаурма на средном</strong></p>
+                                        <div class="icons-group shaurma-rating pull-left">
+                                            <div class="small-icon small-icon-star inline-top"></div>
+                                            <div class="small-icon small-icon-star inline-top"></div>
+                                            <div class="small-icon small-icon-star inline-top"></div>
+                                            <div class="small-icon small-icon-star inline-top"></div>
+                                            <div class="small-icon small-icon-star inline-top"></div>
+                                            <div class="shaurma-rating-value inline-top"><small>228</small></div>
+                                        </div>
+                                        <div class="icons-group shaurma-props pull-right">
+                                            <div class="small-icon small-icon-chicken inline-top"></div>
+                                            <div class="small-icon small-icon-cow inline-top"></div>
+                                            <div class="small-icon small-icon-egg inline-top"></div>
+                                            <div class="small-icon small-icon-mushroom inline-top"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: photo block -->
+                    <!-- START: comment block -->
+                    <div id="comments-scrollbar"><div class="viewport inline-top"><div class="overview">
+                                <div class="shaurma-comments">
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs403323.userapi.com/u4400663/e_754b4eb0.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">buratino</a></div>
+                                            <div class="comment-date">4 окт 2012 в 11:24</div>
+                                        </div>
+                                        <div class="comment-rating positive pull-right inline-top">+28</div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i rel="tooltip"class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Ну я кароче пожрал етой шаурмы потом неделю срал в толкане епта посаны отвечаю!</div>
+                                    </div>
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs307712.userapi.com/u7431759/e_2ed8d721.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">Lexus1991ru</a></div>
+                                            <div class="comment-date">12 окт 2012 в 13:37</div>
+                                        </div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Да ахуенная шаурма не пизди сука пидарас ебаный школьник. Сука давай одрес приеду отпижжу.</div>
+                                    </div>
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs306608.userapi.com/u140699661/d_3efb9d65.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">Impreza_1998</a></div>
+                                            <div class="comment-date">25 окт 2012 в 19:43</div>
+                                        </div>
+                                        <div class="comment-rating negative pull-right inline-top">-5</div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Пашли нахуй все хуисосы ебаные я в маке лучше пожру.</div>
+                                    </div>
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs307712.userapi.com/u7431759/e_2ed8d721.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">Lexus1991ru</a></div>
+                                            <div class="comment-date">12 окт 2012 в 13:37</div>
+                                        </div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Да ахуенная шаурма не пизди сука пидарас ебаный школьник. Сука давай одрес приеду отпижжу.</div>
+                                    </div>
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs306608.userapi.com/u140699661/d_3efb9d65.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">Impreza_1998</a></div>
+                                            <div class="comment-date">25 окт 2012 в 19:43</div>
+                                        </div>
+                                        <div class="comment-rating negative pull-right inline-top">-5</div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Пашли нахуй все хуисосы ебаные я в маке лучше пожру.</div>
+                                    </div>
+                                    <div class="single-comment">
+                                        <img alt="" class="comment-user-avatar inline-top" height="32" width="32" src="http://cs323530.userapi.com/u77067594/d_74ac49d2.jpg" />
+                                        <div class="inline-top">
+                                            <div class="comment-author"><a href="#">DeNiSk@</a></div>
+                                            <div class="comment-date">6 ноя 2012 в 16:12</div>
+                                        </div>
+                                        <div class="comment-rating positive pull-right inline-top">+34</div>
+                                        <div class="pull-right inline-top">
+                                            <i class="icon-thumbs-up comment-thumbs-up transition-opacity"></i>
+                                            <i class="icon-thumbs-down comment-thumbs-down transition-opacity"></i>
+                                        </div>
+                                        <div class="comment-text">Пацаны я в армии и не такое говно жрал!</div>
+                                    </div>
+                                    <div class="comment-load-more text-center">Загрузить ещё комментариев</div>
+                                </div>
+                            </div>
+                        </div><div class="scrollbar inline-top"><div class="track"><div class="thumb transition-opacity"><div class="end"></div></div></div></div>
+                    </div>  
+                    <!-- END: comment block -->
+	  			</div>
+	  			<div id="content" class="span9">
+			  		<div id="map-wrapper" class="slick-box pull-right">
+						<div id="map" style="width: 885px; height: 500px"></div>
+					</div>
+			  	</div>
+			</div>					
+		</div>
+		<!-- Balloon clone object -->
+		<div id="balloon" class="hide">
+			<div class="shaurma-balloon">
+				<img class="shaurma-img img-rounded inline-top" src="img/imgtest.jpg" width="40" height="40" />
+				<div class="inline-top">
+					<div class="shaurma-name text-overflow">Шаурма на средном</div>
+					<div class="icons-group shaurma-rating">
+                        <div class="small-icon small-icon-star inline-top"></div>
+                        <div class="small-icon small-icon-star inline-top"></div>
+                        <div class="small-icon small-icon-star inline-top"></div>
+                        <div class="small-icon small-icon-star inline-top"></div>
+                        <div class="small-icon small-icon-star inline-top"></div>
+					</div>
+				</div>
+				<div class="shaurma-desc">ул. Раевского д. 17</div>
+			</div>
+		</div>
+		<!-- Scripts -->
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+		<script src="js/core-script.js"></script>
+		<script src="js/comments.js"></script>
+		<script>
+            $(function() {
+                $('#comments-scrollbar').tinyscrollbar();   
+            });
+		    
+		</script>
+    </body>
+</html>
