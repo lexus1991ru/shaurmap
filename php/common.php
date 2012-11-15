@@ -1,22 +1,6 @@
 <?php
-
-function generatePassword($mail, $pass)
-{
-    $mail = trim($mail);
-    $pass = trim($pass);
-    $mailSha1 = sha1($mail);
-    $passSha1 = sha1($pass);
-
-    $salt = $passSha1[hexdec($mailSha1[0])].$passSha1[hexdec($mailSha1[1])].
-            $passSha1[hexdec($mailSha1[2])].$passSha1[hexdec($mailSha1[3])];
-
-    return sha1($passSha1.$salt);
-}
-
- function generateActivationKey()
- {
-    return sha1(time().md5(rand()));
- }
+require_once("settings.php");
+require_once("errors.php");
 
 function validateMail($email)
 {
@@ -32,6 +16,7 @@ function validateUser($username)
 {
     // TODO: use approved symbols for checking username
     $username = trim($username);
+    echo $username;
     if ((strlen($username) < ServerSettings::getMinUsernameLenght()) || (strlen($username) > ServerSettings::getMaxUsernameLength()))
     {
         return false;
@@ -49,9 +34,30 @@ function validatePass($pass)
     return true;
 }
 
-function json_response($status, $data)
+function generatePassword($mail, $pass)
 {
-    return json_encode(array("status" => $status, "data" => $data));
+    $mail = trim($mail);
+    $pass = trim($pass);
+    $mailSha1 = sha1($mail);
+    $passSha1 = sha1($pass);
+
+    $salt = $passSha1[hexdec($mailSha1[0])].$passSha1[hexdec($mailSha1[1])].
+            $passSha1[hexdec($mailSha1[2])].$passSha1[hexdec($mailSha1[3])];
+
+    return sha1($passSha1.$salt);
+}
+
+function generateSession($mail, $pass)
+{
+    $mail = trim($mail);
+    $pass = trim($pass);
+    $rnd  = rand();
+    return sha1($mail.$rnd).sha1($pass.$rnd);
+}
+
+function generateActivationKey()
+{
+   return sha1(time().md5(rand()));
 }
 
 function SendMail($subject, $text, $to)
@@ -63,5 +69,29 @@ function SendMail($subject, $text, $to)
               'X-Mailer: PHP/' . phpversion();
     mail($to, $subject, $text, $header);
 }
+
+function json_response($errcode, $data = NULL)
+{
+    if($errcode == ERRORS::NO_ERROR)
+    {
+        echo json_encode(array("status" => $errcode, "data" => $data));
+    }
+    else if ($errcode == ERRORS::INTERNAL_ERROR && ServerSettings::getShowDebugInfo())
+    {
+        echo json_encode(array("status" => $errcode, "data" => $data));
+    }
+    else
+    {
+        if(ServerSettings::getShowDebugInfo())
+        {
+            echo json_encode(array("status" => $errcode, "data" => ERRORS::$serverMsg[$errcode][0]));
+        }
+        else
+        {
+            echo json_encode(array("status" => $errcode, "data" => ERRORS::$serverMsg[$errcode][1]));
+        }
+    }
+}
+
 
 ?>
