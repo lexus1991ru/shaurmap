@@ -6,6 +6,7 @@ var globalMap;
 var upperLeftCorner = [];
 var currentLocation = [];
 var placeMarkCoordinates = [];
+var displayedRoute;
 var axis = {
     x: 1,
     y: 0
@@ -138,8 +139,10 @@ function isUpperLeftChanged(){
 * gets the route from currenlocation to currently selected placemark
 * */
 function getRoute(){
-    //console.debug(globalMap.getRoute(1));
-    ymaps.route([[ymaps.geolocation.latitude, ymaps.geolocation.longitude],placeMarkCoordinates]).then(
+    if(displayedRoute){
+          /*some stuff*/
+    }
+    displayedRoute = new ymaps.route([[ymaps.geolocation.latitude, ymaps.geolocation.longitude],placeMarkCoordinates]).then(
         function (route){
             globalMap.geoObjects.add(route);
         },
