@@ -1,9 +1,16 @@
 body {
 	background: url(../img/bg4.png);
 }
+
+/*
+ * 
+ * Headers
+ * 
+ * 
+*/
+
 #topnavbar {
 	font-weight: bold;
-	font-size: 13px;
 	box-shadow: 0 0 10px #131313;
 }
 #topnavbar .navbar-inner {
@@ -11,49 +18,247 @@ body {
 	border-color: #333;
 }
 #header {
-	border-bottom: 1px solid #ddd;
 	margin-top: 40px;
 	background: white url(../img/bg3.png);
 	box-shadow: 1px 1px 2px #fff;
+    border-bottom: 1px solid #ddd;
 }
 #header h3 {
 	display: inline-block;
 	font-weight: bold;
 	font-family: 'Open Sans Condensed', sans-serif;
-	padding: 8px 20px;
+	padding: 0 20px;
 	text-shadow: 1px 1px 1px #ccc;
 }
 #wrapper {
 	box-sizing: border-box;
 }
- #sidebar {
+
+/*
+ * 
+ * Left sidebar
+ * 
+ * 
+*/
+
+#sidebar {
 	box-sizing: border-box;
 	background: #f9f9f9;
-	padding: 10px;
-	height: 530px;
+	height: 550px;
 	border-right: 1px solid #ddd;
 	border-left: 1px solid #ddd;
 	box-shadow: 1px 1px 2px #fff;
 }
-#sidebar .shaurma-main-name {
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-family: sans-serif;
+#sidebar .shaurma-info {
+     color: #fff;
+     text-shadow: 1px 1px 1px black;
 }
-#sidebar .shaurma-main-photo {
-    border-radius: 2px;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+#sidebar .shaurma-name { font-size: 16px; margin-bottom: 5px; }
+#sidebar .shaurma-photo { }
+#sidebar .shaurma-rating .shaurma-rating-value { }
+#sidebar .shaurma-props { }
+#sidebar .shaurma-comments {
+
 }
-#map-wrapper {
-	margin-top: 25px;
-	padding: 10px;
-	width: 870px;
+#sidebar .shaurma-comments .single-comment {
+    padding: 10px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #f0f0f0;
+}
+#sidebar .shaurma-comments .single-comment:hover {
+    background-color: #f6f6f6; 
+}
+#sidebar .shaurma-comments .single-comment .comment-author {
+    line-height: normal;
+}
+#sidebar .shaurma-comments .single-comment .comment-author a {
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    text-shadow: 1px 1px 1px #fff;
+}
+#sidebar .shaurma-comments .single-comment .comment-date {
+    font-size: 11px;
+    color: #999;
+    line-height: normal;
+}
+#sidebar .shaurma-comments .single-comment .comment-rating {
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: bold;
+}
+#sidebar .shaurma-comments .single-comment .comment-rating.positive { color: #43B13F; }
+#sidebar .shaurma-comments .single-comment .comment-rating.negative { color: #D14242; }
+#sidebar .shaurma-comments .single-comment .comment-user-avatar {
+    margin-right: 5px;
+    box-shadow: 1px 1px 1px #ccc;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+#sidebar .shaurma-comments .single-comment .comment-thumbs-up,
+#sidebar .shaurma-comments .single-comment .comment-thumbs-down {
+    opacity: 0;
+    cursor: pointer;
+}
+#sidebar .shaurma-comments .single-comment:hover .comment-thumbs-up,
+#sidebar .shaurma-comments .single-comment:hover .comment-thumbs-down {
+    opacity: 0.5;
+}
+#sidebar .shaurma-comments .single-comment .comment-thumbs-up:hover,
+#sidebar .shaurma-comments .single-comment .comment-thumbs-down:hover {
+    opacity: 0.9;
+}
+#sidebar .shaurma-comments .single-comment .comment-thumbs-up:active,
+#sidebar .shaurma-comments .single-comment .comment-thumbs-down:active {
+    opacity: 0.5;
+}
+#sidebar .shaurma-comments .single-comment .comment-text {
+    margin-top: 5px;
+    line-height: 18px;
+    color: #555;
+    text-shadow: 1px 1px 1px #eee;
+}  
+#sidebar .shaurma-comments .comment-load-more {
+    padding: 5px;
+    margin: 5px 5px 15px;
+    font-size: 11px;
+    color: #999;
+    cursor: pointer;
+}
+#sidebar .shaurma-comments .comment-load-more:hover { background-color: #f3f3f3; color: #777; }
+#sidebar .shaurma-comments .comment-load-more:active { background-color: #f0f0f0; }
+
+/* 
+ * 
+ * Comments scrollbar
+ * 
+ * 
+*/
+
+#comments-scrollbar {
+    clear: both;
+    width: 300px;
+}
+#comments-scrollbar .viewport {
+    width: 291px;
+    height: 360px;
+    overflow: hidden;
+    position: relative;
+}
+#comments-scrollbar .overview {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+#comments-scrollbar .thumb {
+    background-color: #e2e2e2;
+    opacity: 0.5;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+#comments-scrollbar:hover .thumb,
+#comments-scrollbar .thumb:hover {
+    opacity: 1;
+}
+#comments-scrollbar .scrollbar {
+    background-color: #f6f6f6;
+    position: relative;
+    border-left: 1px solid #f0f0f0;
+    width: 6px;
+}
+#comments-scrollbar .track {
+    height: 100%;
+    width: 7px;
+    position: relative;
+}
+#comments-scrollbar .thumb {
+    height: 20px;
+    width: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+}
+#comments-scrollbar .thumb .end {
+    opacity: 0;
+    overflow: hidden;
+    height: 5px;
+    width: 7px;
+}
+#comments-scrollbar .disable { display: none; }
+
+/*
+ * 
+ * Yandex map content
+ * 
+ *
+ */
+
+#content #map-wrapper {
+	margin-top: 15px;
 	box-sizing: border-box;
 	background: #fff url(../img/loader.gif) no-repeat center;
 }
-#map {
+#content #map {
     box-sizing: border-box;
 	border: 1px solid #bbb;
+}
+
+/* 
+ * 
+ * Map balloon 
+ * 
+ * 
+*/
+
+.shaurma-balloon {
+    text-shadow: 1px 1px 1px #EEE;
+}
+.shaurma-balloon .shaurma-name {
+    width: 160px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.shaurma-balloon .shaurma-desc {
+    font-size: 11px;
+    line-height: 16px;
+    margin-top: 3px;
+}
+.shaurma-balloon .shaurma-rating {
+    margin-top: 4px;
+}
+.shaurma-balloon .shaurma-img {
+    box-shadow: 1px 1px 2px #acacac;
+    margin-right: 5px;
+}
+
+/*
+ * 
+ * Helper classes
+ * 
+ * 
+*/
+.icons-group .small-icon-star { background: url(../img/star.png); }
+.icons-group .small-icon-chicken { background: url(../img/chicken.png); }
+.icons-group .small-icon-apple { background: url(../img/apple.png); }
+.icons-group .small-icon-cow { background: url(../img/cow.png); }
+.icons-group .small-icon-cheese { background: url(../img/cheese.png); }
+.icons-group .small-icon-mushroom { background: url(../img/mushroom.png); }
+.icons-group .small-icon-egg { background: url(../img/egg.png); }
+.icons-group .small-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 14px;
+    width: 14px;
+}
+.transition-opacity,
+.transition-opacity:hover {
+    -webkit-transition: opacity .25s;
+    -moz-transition: opacity .25s;
+    transition: opacity .25s;
 }
 .transition-color,
 .transition-color:hover {
@@ -71,45 +276,21 @@ body {
 }
 
 .text-overflow {
-	overflow: hidden;
+    overflow: hidden;
   	text-overflow: ellipsis;
  	white-space: nowrap;
 }
-.shaurma-shop {
-	text-shadow: 1px 1px 1px #EEE;
-}
-.shaurma-shop .shaurma-name {
-	width: 160px;
-	font-size: 12px;
-	font-weight: bold;
-}
-.shaurma-shop .shaurma-desc {
-	font-size: 11px;
-	line-height: 16px;
-	margin-top: 3px;
-}
-.shaurma-shop .shaurma-rating {
-	margin-top: 4px;	
-}
-.shaurma-shop .shaurma-rating .single-star {
-	background: url(../img/star.png) no-repeat center;
-	background-size: cover;
-	height: 18px;
-	width: 18px;
-}
-.shaurma-shop .shaurma-img {
-	box-shadow: 1px 1px 2px #acacac;
-	margin-right: 5px;
-}
-
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
 .slick-box {
 	position: relative;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
-.slick-box:before,
-.slick-box:after {
+.slick-box::before,
+.slick-box::after {
 	content: '';
 	z-index: -1;
 	position: absolute;
@@ -128,7 +309,7 @@ body {
 	-o-transform: skew(-15deg) rotate(-3deg);
 	transform: skew(-15deg) rotate(-3deg);
 }
-.slick-box:after {
+.slick-box::after {
 	left: auto;
 	right: 10px;
 	-webkit-transform: skew(15deg) rotate(3deg);
@@ -136,4 +317,11 @@ body {
 	-ms-transform: skew(15deg) rotate(3deg);
 	-o-transform: skew(15deg) rotate(3deg);
 	transform: skew(15deg) rotate(3deg);
+}
+.noSelect {
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }

@@ -5080,8 +5080,8 @@ input[type="submit"].btn.btn-mini {
 }
 
 .tooltip.in {
-  opacity: 0.8;
-  filter: alpha(opacity=80);
+  opacity: 1;
+  filter: alpha(opacity=100);
 }
 
 .tooltip.top {
@@ -5106,10 +5106,10 @@ input[type="submit"].btn.btn-mini {
   color: #ffffff;
   text-align: center;
   text-decoration: none;
-  background-color: #000000;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.9);
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
 }
 
 .tooltip-arrow {
@@ -5724,7 +5724,6 @@ a.badge:hover {
 
 .carousel {
   position: relative;
-  margin-bottom: 20px;
   line-height: 1;
 }
 
@@ -5744,7 +5743,6 @@ a.badge:hover {
 }
 
 .carousel .item > img {
-  display: block;
   line-height: 1;
 }
 
@@ -5824,9 +5822,9 @@ a.badge:hover {
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 8px;
+  padding: 6px 9px;
   background: #333333;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(50, 50, 50, 0.6);
 }
 
 .carousel-caption h4,
