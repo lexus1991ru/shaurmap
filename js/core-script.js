@@ -150,6 +150,7 @@ function isUpperLeftChanged(){
 
 /*
 * gets the route from currenlocation to currently selected placemark
+* and displays it on the map
 * */
 function getRoute(){
     if(displayedRoute){
