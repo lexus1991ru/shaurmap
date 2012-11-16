@@ -266,10 +266,15 @@ body {
 	-moz-transition: color .2s;
 	transition: color .2s;
 }
-.inline-top {
+.inline-block {
 	display: inline-block;
 	vertical-align: top;
 }
+
+#balloon{
+    display: none;
+}
+
 .text-overflow {
     overflow: hidden;
   	text-overflow: ellipsis;
