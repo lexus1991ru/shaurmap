@@ -16,7 +16,6 @@ function validateUser($username)
 {
     // TODO: use approved symbols for checking username
     $username = trim($username);
-    echo $username;
     if ((strlen($username) < ServerSettings::getMinUsernameLenght()) || (strlen($username) > ServerSettings::getMaxUsernameLength()))
     {
         return false;
