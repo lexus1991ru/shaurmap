@@ -22,7 +22,7 @@ $supportedRequests = array(
     ),
     "confirm" => array(
         array("mail", "key", "login"),
-        false,
+        true,
         requestConfirm
     )
 );
@@ -55,9 +55,9 @@ function requestRegister($pars)
 }
 
 function requestConfirm($pars) {
-    $mail = $_GET[$pars[0]];
-    $key = $_GET[$pars[1]];
-    $login = $_GET[$pars[2]];
+    $mail = $_POST[$pars[0]];
+    $key = $_POST[$pars[1]];
+    $login = $_POST[$pars[2]];
     $dbConn = new WrapperDBRegister();
     $res = $dbConn->confirmActivation($mail, $key, $login);
     echo json_response($res);

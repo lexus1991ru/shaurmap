@@ -87,12 +87,12 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
             }
             else
             {
-                echo json_response(ERRORS::BAD_PASSWORD_FORMAT);
+                return ERRORS::BAD_PASSWORD_FORMAT;
             }
         }
         else
         {
-            echo json_response(ERRORS::PASSWORDS_NOT_EQUAL);
+            return ERRORS::PASSWORDS_NOT_EQUAL;
         }
     }
 
@@ -102,6 +102,7 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
         $email = $this->connection->real_escape_string($email);
 
         $query = "SELECT activated FROM regactivations WHERE activationKey='".$key."' AND email='".$email."'";
+
         $result = $this->connection->query($query);
 
         if($this->connection->errno)
