@@ -6,7 +6,6 @@ require_once("errors.php");
 class WrapperDBBase
 {
     protected $connection = NULL;
-    protected $settings = NULL;
     protected $connectionStatus = false;
     protected $data = NULL;
 
