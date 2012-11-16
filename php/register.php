@@ -64,41 +64,6 @@ function requestConfirm($pars) {
 }
 
 $ajaxRequest = new AjaxRequest($supportedRequests);
-if (count($_GET)) {
-    if(isset($_GET['req']))
-    {
-        $requestType = $_GET['req'];
-        if ($ajaxRequest->isValid())
-        {
-            $ajaxRequest->executeRequest($requestType);
-        }
-        else
-        {
-            echo json_response(ERRORS::UNKNOWN_GET_REQUEST);
-        }
-    }
-    else
-    {
-        echo json_response(ERRORS::UNKNOWN_GET_REQUEST);
-    }
-}
-else if (count($_POST)) {
-    if(isset($_POST['req']))
-    {
-        $requestType = $_POST['req'];
-        if ($ajaxRequest->isValid())
-        {
-            $ajaxRequest->executeRequest($requestType);
-        }
-        else
-        {
-            echo json_response(ERRORS::UNKNOWN_POST_REQUEST);
-        }
-    }
-    else
-    {
-        echo json_response(ERRORS::UNKNOWN_POST_REQUEST);
-    }
-}
+$ajaxRequest->executeRequest($requestType, $_GET, $_POST);
 
 ?>
