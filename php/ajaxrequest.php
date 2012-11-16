@@ -10,7 +10,7 @@ class AjaxRequest
 
     private function validateRequests($reqs)
     {
-        if(ServerSettings::getShowDebugInfo())
+        if(ServerSettings::showDebugInfo)
         {
             if(is_array($reqs))
             {
@@ -98,8 +98,37 @@ class AjaxRequest
         return false;
     }
 
-    function executeRequest($requestName)
+    function executeRequest($requestName, $GET, $POST)
     {
+        if(!$ajaxRequest->isValid())
+            echo json_response(ERRORS::INTERNAL_ERROR, "Invalid requests map");
+            return;
+        $requestType = NULL;
+        if (count($GET)) {
+            if(isset($GET['req']))
+            {
+                $requestType = $GET['req'];
+            }
+            else
+            {
+                return ERRORS::UNKNOWN_GET_REQUEST;
+            }
+        }
+        else if (count($POST)) {
+            if(isset($POST['req']))
+            {
+                $requestType = $POST['req'];
+            }
+            else
+            {
+                return ERRORS::UNKNOWN_POST_REQUEST;
+            }
+        }
+        else
+        {
+            return ERRORS::UNKNOWN_REQUEST;
+        }
+
         if(in_array($requestName, array_keys($this->requests)))
         {
             $pars   = $this->requests[$requestName][0];

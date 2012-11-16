@@ -35,6 +35,7 @@ class ERRORS
     const GET_MARKETS_MYSQL_ERROR = 29;
     const GET_MARKET_DESC_MYSQL_ERROR = 30;
     const MARKET_DESC_NOT_FOUND = 31;
+    const UNKNOWN_REQUEST = 32;
 
     static public $serverMsg = array
     (
@@ -69,7 +70,8 @@ class ERRORS
         self::DELETE_COMMENT_MYSQL_ERROR => array("Mysql error in deleteComment function", ""),
         self::GET_MARKETS_MYSQL_ERROR => array("Mysql error in getMarket* function", ""),
         self::GET_MARKET_DESC_MYSQL_ERROR  => array("Mysql error in getMarketDesc* function", ""),
-        self::MARKET_DESC_NOT_FOUND => array("Unable to found market description", "")
+        self::MARKET_DESC_NOT_FOUND => array("Unable to found market description", ""),
+        self::UNKNOWN_REQUEST => array("Unknown type of request", "")
     );
 }
 
