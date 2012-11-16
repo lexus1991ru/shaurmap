@@ -1,6 +1,7 @@
 <?php
 require_once("wrapperdbbase.php");
 require_once("common.php");
+require_once("validator.php");
 
 interface IWrapperDBComments
 {
@@ -9,7 +10,7 @@ interface IWrapperDBComments
     public function getCommentByID($commentID, $token, $userID);
     public function postComment($marketID, $userID, $mark, $text, $token);
     public function rankComment($commentID, $isThumbsUp, $token, $userID);
-    public function editComment($commentID, $token, $userID);
+    public function editComment($commentID, $text,$token, $userID);
     public function deleteComment($commentID, $token, $userID);
     public function approveComment($commentID, $token, $userID);
 }
@@ -40,7 +41,7 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
             {
                 $row = $result->fetch_assoc();
                 $comment = NULL;
-                if(($userRights == 1) || ($userRights == 2))
+                if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
                 {
                     $comment = new CommentAdmin($row['commentID'], $row['marketID'], $row['userID'],
                         $row['commentTime'], $row['text'], $row['mark'],
@@ -90,8 +91,8 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
     public function getCommentByID($commentID, $token, $userID)
     {
         $commentID = $this->connection->real_escape_string($commentID);
-        $start = $this->connection->real_escape_string($start);
-        $count = $this->connection->real_escape_string($count);
+        $start = $this->connection->real_escape_string($token);
+        $count = $this->connection->real_escape_string($userID);
 
         $query = "SELECT * FROM comments WHERE $commentID='".$commentID."' LIMIT ".$start.", ".$count;
         $result = $this->connection->query($query);
@@ -111,9 +112,9 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         if($res == ERRORS::NO_ERROR)
         {
             $ts = time();
-            if(($mark > 0) && ($mark <= ServerSettings::getMaxMarketMark()))
+            if(Validator::validateMark($mark))
             {
-                if(strlen(($text) >= ServerSettings::getMinCommentLength()) && (strlen($text) <= ServerSettings::getMaxCommentLength()))
+                if(Validator::validateCommentLength($text))
                 {
                     $query = "INSERT INTO comments (commentID, marketID, userID, commentTime, text, mark, photos, approved, thumbsUp, thumbsDown) ".
                         "VALUES (NULL, '".$marketID."', '".$userID."', FROM_UNIXTIME('".$ts."'), '".$text."', '".$mark."', NULL, '0', '0', '0')";
@@ -164,37 +165,29 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         }
     }
 
-    public function editComment($commentID, $mark, $text, $token, $userID)
+    public function editComment($commentID, $text, $token, $userID)
     {
         // TODO: Author sholub be able to edit comment
-        $marketID = $this->connection->real_escape_string($marketID);
+        $commentID = $this->connection->real_escape_string($commentID);
         $userID = $this->connection->real_escape_string($userID);
-        $mark = $this->connection->real_escape_string($mark);
         $text = $this->connection->real_escape_string($text);
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
             $userRights = $this->getUserRights($userID);
-            if(($userRights == 1) || ($userRights == 2))
+            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
             {
-                if(($mark > 0) && ($mark <= ServerSettings::getMaxMarketMark()))
+                if(Validator::validateCommentLength($text))
                 {
-                    if(strlen(($text) >= ServerSettings::getMinCommentLength()) && (strlen($text) <= ServerSettings::getMaxCommentLength()))
-                    {
-                        $query = "UPDATE comments SET text='".$text."', mark='".$mark."' WHERE commentID='".$commentID."'";
-                        $result = $this->connection->query($query);
-                        if($this->connection->errno)
-                            return ERRORS::DELETE_COMMENT_MYSQL_ERROR;
-                        return ERRORS::NO_ERROR;
-                    }
-                    else
-                    {
-                        return ERRORS::BAD_COMMENT_LENGTH;
-                    }
+                    $query = "UPDATE comments SET text='".$text."' WHERE commentID='".$commentID."'";
+                    $result = $this->connection->query($query);
+                    if($this->connection->errno)
+                        return ERRORS::DELETE_COMMENT_MYSQL_ERROR;
+                    return ERRORS::NO_ERROR;
                 }
                 else
                 {
-                    return ERRORS::BAD_MARKET_MARK;
+                    return ERRORS::BAD_COMMENT_LENGTH;
                 }
             }
             else
@@ -216,7 +209,7 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         if($res == ERRORS::NO_ERROR)
         {
             $userRights = $this->getUserRights($userID);
-            if(($userRights == 1) || ($userRights == 2))
+            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
             {
                 $query = "DELETE FROM comments WHERE commentID='".$commentID."'";
                 $result = $this->connection->query($query);
@@ -233,6 +226,11 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         {
             return $res;
         }
+    }
+
+    public function approveComment($commentID, $token, $userID)
+    {
+
     }
 }
 

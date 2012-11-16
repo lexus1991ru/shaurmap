@@ -58,7 +58,7 @@ class WrapperDBMarkets extends WrapperDBBase implements IWrapperDBMarkets
         $start = $this->connection->real_escape_string($start);
         $count = $this->connection->real_escape_string($count);
 
-        $query = "SELECT * FROM markets WHERE cityID='".$id."' LIMIT ".$start.", ".$count;
+        $query = "SELECT * FROM markets WHERE cityID='".$cityID."' LIMIT ".$start.", ".$count;
         $result = $this->connection->query($query);
 
         if($this->connection->errno)
@@ -189,7 +189,7 @@ class WrapperDBMarkets extends WrapperDBBase implements IWrapperDBMarkets
         $userID = $this->connection->real_escape_string($userID);
 
         $query = "SET INTO markets(marketID, marketName, cityID, latitude, longitude, closedDate)".
-                 " VALUES ('".$nextID."', '".$marketName."', '".$cityID."', '".$latitude."', '".$longitude."', 'NULL')";
+                 " VALUES ('".$marketID."', '".$marketName."', '".$cityID."', '".$latitude."', '".$longitude."', 'NULL')";
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::EDIT_MARKET_MYSQL_ERROR;
@@ -198,7 +198,7 @@ class WrapperDBMarkets extends WrapperDBBase implements IWrapperDBMarkets
         if($res == ERRORS::NO_ERROR)
         {
             $userRights = $this->getUserRights($userID);
-            if(($userRights == 1) || ($userRights == 2))
+            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
             {
                 $query = "UPDATE markets SET marketName='".$marketName."', cityID='".$cityID."', latitude='".
                          $latitude."', longitude='".$longitude."', closedDate=DATE(FROM_UNIXTIME('".$closedDate."'))".
@@ -226,7 +226,7 @@ class WrapperDBMarkets extends WrapperDBBase implements IWrapperDBMarkets
         if($res == ERRORS::NO_ERROR)
         {
             $userRights = $this->getUserRights($userID);
-            if(($userRights == 1) || ($userRights == 2))
+            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
             {
                 $query = "DELETE FROM markets WHERE marketID='".$marketID."'";
                 $result = $this->connection->query($query);
@@ -244,6 +244,13 @@ class WrapperDBMarkets extends WrapperDBBase implements IWrapperDBMarkets
             return $res;
         }
    }
+
+    public function editMarketDesc($marketID, $marketPhoto, $marketText, $pig,
+                                   $chicken, $gloves, $lemonade, $cigarettes, $beer,
+                                   $coffee, $token, $userID)
+    {
+
+    }
 }
 
 class Market
