@@ -16,7 +16,6 @@ function validateUser($username)
 {
     // TODO: use approved symbols for checking username
     $username = trim($username);
-    echo $username;
     if ((strlen($username) < ServerSettings::getMinUsernameLenght()) || (strlen($username) > ServerSettings::getMaxUsernameLength()))
     {
         return false;
@@ -58,6 +57,21 @@ function generateSession($mail, $pass)
 function generateActivationKey()
 {
    return sha1(time().md5(rand()));
+}
+
+function undefinedToBool($var)
+{
+    if($var == NULL)
+    {
+        return "NULL";
+    }
+    else
+    {
+        if($var)
+            return "1";
+        else
+            return "0";
+    }
 }
 
 function SendMail($subject, $text, $to)

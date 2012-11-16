@@ -32,6 +32,9 @@ class ERRORS
     const RANK_COMMENT_MYSQL_ERROR = 26;
     const PERMISSION_DENIED = 27;
     const DELETE_COMMENT_MYSQL_ERROR = 28;
+    const GET_MARKETS_MYSQL_ERROR = 29;
+    const GET_MARKET_DESC_MYSQL_ERROR = 30;
+    const MARKET_DESC_NOT_FOUND = 31;
 
     static public $serverMsg = array
     (
@@ -63,7 +66,10 @@ class ERRORS
         self::GET_COMMENTS_MYSQL_ERROR => array("Mysql error in getComments* function", ""),
         self::RANK_COMMENT_MYSQL_ERROR => array("Mysql error in rankComment function", ""),
         self::PERMISSION_DENIED  => array("You have no rights to complete this operation", ""),
-        self::DELETE_COMMENT_MYSQL_ERROR => array("Mysql error in deleteComment function", "")
+        self::DELETE_COMMENT_MYSQL_ERROR => array("Mysql error in deleteComment function", ""),
+        self::GET_MARKETS_MYSQL_ERROR => array("Mysql error in getMarket* function", ""),
+        self::GET_MARKET_DESC_MYSQL_ERROR  => array("Mysql error in getMarketDesc* function", ""),
+        self::MARKET_DESC_NOT_FOUND => array("Unable to found market description", "")
     );
 }
 

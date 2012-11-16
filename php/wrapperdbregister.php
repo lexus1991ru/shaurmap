@@ -87,12 +87,12 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
             }
             else
             {
-                echo json_response(ERRORS::BAD_PASSWORD_FORMAT);
+                return ERRORS::BAD_PASSWORD_FORMAT;
             }
         }
         else
         {
-            echo json_response(ERRORS::PASSWORDS_NOT_EQUAL);
+            return ERRORS::PASSWORDS_NOT_EQUAL;
         }
     }
 

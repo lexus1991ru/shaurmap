@@ -28,12 +28,18 @@ class DBSettings {
 
 class ServerSettings
 {
+    // New
+    const $loginRegExp
+
+
     private static $showDebugInfo = true;
     private static $approvedUsernameSymbols = "abcdefghijklmnopqrstuvwxyz0123456789_";
     private static $maxUsernameLength = 32;
     private static $minUsernameLenght = 3;
     private static $maxPasswordLenght = 32;
     private static $minPasswordLenght = 6;
+    private static $maxMarketNameLenght = 32;
+    private static $minMarketNameLenght = 6;
     private static $sessionLiveTime = 2592000;// 60*60*24*30 = 30 days
     private static $maxMarketMark = 5;
     private static $maxCommentLength = 2000;
@@ -79,6 +85,16 @@ class ServerSettings
     function getMinPasswordLenght()
     {
         return self::$minPasswordLenght;
+    }
+
+    function getMaxMarketNameLenght()
+    {
+        return self::$maxMarketNameLenght;
+    }
+
+    function getMinMarketNameLenght()
+    {
+        return self::$minMarketNameLenght;
     }
 
     function getMaxMarketMark()

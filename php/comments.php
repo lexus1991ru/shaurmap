@@ -32,7 +32,7 @@ $supportedRequests = array(
         requestRankComment
     ),
     "editcomment" => array(
-        array("commentid", "token", "userid"),
+        array("commentid", "mark", "text", "token", "userid"),
         true,
         requestEditComment
     ),
@@ -45,12 +45,38 @@ $supportedRequests = array(
 
 function requestUserComments($pars)
 {
-    ;
+    $userID = $_POST[$pars[0]];
+    $start = $_POST[$pars[1]];
+    $count = $_POST[$pars[2]];
+    $token = $_POST[$pars[3]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->getCommentsByUser($userID, $start, $count, $token);
+    if($res == ERRORS::NO_ERROR)
+    {
+        echo json_response($res, $dbConn->getData());
+    }
+    else
+    {
+        echo json_response($res);
+    }
 }
 
 function requestComment($pars)
 {
-    ;
+    $userID = $_POST[$pars[0]];
+    $start = $_POST[$pars[1]];
+    $count = $_POST[$pars[2]];
+    $token = $_POST[$pars[3]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->getCommentByID($commentID, $token, $userID);
+    if($res == ERRORS::NO_ERROR)
+    {
+        echo json_response($res, $dbConn->getData());
+    }
+    else
+    {
+        echo json_response($res);
+    }
 }
 
 function requestMarketComments($pars)
@@ -61,7 +87,7 @@ function requestMarketComments($pars)
     $token = $_POST[$pars[3]];
     $userID = $_POST[$pars[4]];
     $dbConn = new WrapperDBComments();
-    $res = $dbConn->getCommentsByMarketID($marketID, $start, $count, $token, $userID);
+    $res = $dbConn->getCommentsByMarket($marketID, $start, $count, $token, $userID);
     if($res == ERRORS::NO_ERROR)
     {
         echo json_response($res, $dbConn->getData());
@@ -97,12 +123,24 @@ function requestRankComment($pars)
 
 function requestEditComment($pars)
 {
-    ;
+    $commentID = $_POST[$pars[0]];
+    $mark = $_POST[$pars[1]];
+    $text = $_POST[$pars[2]];
+    $token = $_POST[$pars[3]];
+    $userID = $_POST[$pars[4]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->editComment($commentID, $mark, $text, $token, $userID);
+    echo json_response($res);
 }
 
 function requestDeleteComment($pars)
 {
-    ;
+    $commentID = $_POST[$pars[0]];
+    $token = $_POST[$pars[1]];
+    $userID = $_POST[$pars[2]];
+    $dbConn = new WrapperDBComments();
+    $res = $dbConn->deleteComment($commentID, $token, $userID);
+    echo json_response($res);
 }
 
 $ajaxRequest = new AjaxRequest($supportedRequests);
