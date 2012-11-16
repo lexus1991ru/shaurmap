@@ -1,7 +1,6 @@
 <?php
 
 require_once("wrapperdbbase.php");
-require_once("common.php");
 
 interface IWrapperDBRegister
 {
@@ -26,7 +25,7 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
     public function checkUser($username)
     {
         $username = trim($username);
-        if(!validateUser($username))
+        if(!Validator::validateUser($username))
         {
             return ERRORS::LOGIN_BAD_FORMAT;
         }
@@ -45,7 +44,7 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
     public function checkMail($email)
     {
         $email = trim($email);
-        if(!validateMail($email))
+        if(!Validator::validateMail($email))
         {
             return ERRORS::EMAIL_BAD_FORMAT;
         }
@@ -68,7 +67,7 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
     public function submitActivationRequest($email, $password1, $password2)
     {
         if (md5($password1) == md5($password2)) {
-            if(validatePass($password1)){
+            if(Validator::validatePass($password1)){
                 $res = $this->checkMail($email);
                 if($res != 0)
                     return $res;
@@ -135,6 +134,9 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
         $res = $this->checkActivationLink($email, $key);
         if($res == ERRORS::NO_ERROR)
         {
+            if(!Validator::validateUser($login))
+                return ERRORS::LOGIN_BAD_FORMAT;
+
             $query = "SELECT activationID, activated, password FROM regactivations WHERE activationKey='".$key."' AND email='".$email."'";
             $result = $this->connection->query($query);
 

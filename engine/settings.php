@@ -11,26 +11,28 @@ class DBSettings
 class ServerSettings
 {
     // Server
-    const showDebugInfo = true;
+    const showDebugInfo   = true;
     const sessionLiveTime = 2592000;// 60*60*24*30 = 30 days
-    const tokenLength = 80;
+    const tokenLength     = 80;
 
     // Registration
     const maxUsernameLength = 32;
-    const minUsernameLenght = 3;
-    const maxPasswordLenght = 32;
-    const minPasswordLenght = 6;
-    const loginRegExp = "|[a-z]+|";
-    const emailRegExp = "|^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$|";
+    const minUsernameLength = 3;
+    const maxPasswordLength = 32;
+    const minPasswordLength = 6;
+    const maxEmailLength    = 64;
+    const loginRegExp       = "|^[a-z0-9-_\.]+$|i";
+    const emailRegExp       = "|^[_a-z0-9-\\+]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$|i";
 
     // Comments
-    const maxMarketMark = 5;
-    const maxCommentLength = 2000;
-    const minCommentLength = 0;
+    const maxMarketMark        = 5;
+    const maxCommentLength     = 2000;
+    const minCommentLength     = 0;
+    const maxCommentsInRequest = 100;
 
     // Markets
-    const maxMarketNameLenght = 32;
-    const minMarketNameLenght = 6;
+    const maxMarketNameLength = 32;
+    const minMarketNameLength = 6;
 }
 
 ?>

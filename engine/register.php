@@ -11,17 +11,17 @@ $supportedRequests = array(
         requestCheckuser
     ),
     "checkmail" => array(
-        array("mail"),
+        array("email"),
         true,
         requestCheckmail
     ),
     "register" => array(
-        array("mail", "pass1", "pass2"),
+        array("email", "pass1", "pass2"),
         true,
         requestRegister
     ),
     "confirm" => array(
-        array("mail", "key", "login"),
+        array("email", "key", "login"),
         true,
         requestConfirm
     )
@@ -37,33 +37,33 @@ function requestCheckuser($pars)
 
 function requestCheckmail($pars)
 {
-    $mail = $_POST[$pars[0]];
+    $email = $_POST[$pars[0]];
     $dbConn = new WrapperDBRegister();
-    $res = $dbConn->checkMail($mail);
+    $res = $dbConn->checkMail($email);
     echo json_response($res);
 }
 
 function requestRegister($pars)
 {
-    $mail = $_POST[$pars[0]];
+    $email = $_POST[$pars[0]];
     $pass1 = $_POST[$pars[1]];
     $pass2 = $_POST[$pars[2]];
     $dbConn = new WrapperDBRegister();
-    $result = $dbConn->submitActivationRequest($mail, $pass1, $pass2);
+    $result = $dbConn->submitActivationRequest($email, $pass1, $pass2);
     echo json_response($result);
     // TODO: Send mail to user with activation link
 }
 
 function requestConfirm($pars) {
-    $mail = $_POST[$pars[0]];
+    $email = $_POST[$pars[0]];
     $key = $_POST[$pars[1]];
     $login = $_POST[$pars[2]];
     $dbConn = new WrapperDBRegister();
-    $res = $dbConn->confirmActivation($mail, $key, $login);
+    $res = $dbConn->confirmActivation($email, $key, $login);
     echo json_response($res);
 }
 
 $ajaxRequest = new AjaxRequest($supportedRequests);
-$ajaxRequest->executeRequest($requestType, $_GET, $_POST);
+$ajaxRequest->executeRequest($_GET, $_POST);
 
 ?>
