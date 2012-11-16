@@ -6,9 +6,8 @@ require_once("errors.php");
 class WrapperDBBase
 {
     protected $connection = NULL;
-    protected $settings = NULL;
     protected $connectionStatus = false;
-    protected $data = NULL;
+    private $data = NULL;
 
     protected function __construct()
     {
@@ -23,7 +22,7 @@ class WrapperDBBase
         $this->Disconnect();
     }
 
-    protected function Connect()
+    private function Connect()
     {
         $this->connection = new mysqli(DBSettings::getHost(), DBSettings::getLogin(), DBSettings::getPassword(), DBSettings::getBase());
         if($this->connection->connect_errno)
@@ -38,7 +37,7 @@ class WrapperDBBase
         }
     }
 
-    protected function Disconnect()
+    private function Disconnect()
     {
         $this->connection->close();
     }

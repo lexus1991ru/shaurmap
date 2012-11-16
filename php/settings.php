@@ -2,7 +2,7 @@
 class DBSettings {
     private static $host = "localhost";
     private static $login = "root";
-    private static $password = "Qq12345";
+    private static $password = "";
     private static $base = "shaurmap";
 
     function getHost()

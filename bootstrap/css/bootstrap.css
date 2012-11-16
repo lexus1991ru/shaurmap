@@ -2174,6 +2174,25 @@ table th[class*="span"],
   background-image: url("../img/glyphicons-halflings-white.png");
 }
 
+/* Green icons */
+
+.icon-green {
+  background-image: url("../img/glyphicons-halflings-green.png");
+}
+
+/* Red icons */
+
+.icon-red {
+  background-image: url("../img/glyphicons-halflings-red.png");
+}
+
+.icon-ajax-loader {
+  background-image: url("../img/ajax-loader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
 .icon-glass {
   background-position: 0      0;
 }
@@ -5124,7 +5143,7 @@ input[type="submit"].btn.btn-mini {
   bottom: 0;
   left: 50%;
   margin-left: -5px;
-  border-top-color: #000000;
+  border-top-color: rgba(0, 0, 0, 0.9);
   border-width: 5px 5px 0;
 }
 
@@ -5132,7 +5151,7 @@ input[type="submit"].btn.btn-mini {
   top: 50%;
   left: 0;
   margin-top: -5px;
-  border-right-color: #000000;
+  border-right-color: rgba(0, 0, 0, 0.9);
   border-width: 5px 5px 5px 0;
 }
 
@@ -5140,7 +5159,7 @@ input[type="submit"].btn.btn-mini {
   top: 50%;
   right: 0;
   margin-top: -5px;
-  border-left-color: #000000;
+  border-left-color: rgba(0, 0, 0, 0.9);
   border-width: 5px 0 5px 5px;
 }
 
@@ -5148,7 +5167,7 @@ input[type="submit"].btn.btn-mini {
   top: 0;
   left: 50%;
   margin-left: -5px;
-  border-bottom-color: #000000;
+  border-bottom-color: rgba(0, 0, 0, 0.9);
   border-width: 0 5px 5px;
 }
 

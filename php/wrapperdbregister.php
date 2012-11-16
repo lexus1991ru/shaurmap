@@ -102,6 +102,7 @@ class WrapperDBRegister extends WrapperDBBase implements IWrapperDBRegister
         $email = $this->connection->real_escape_string($email);
 
         $query = "SELECT activated FROM regactivations WHERE activationKey='".$key."' AND email='".$email."'";
+
         $result = $this->connection->query($query);
 
         if($this->connection->errno)

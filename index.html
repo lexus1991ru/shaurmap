@@ -9,11 +9,22 @@
 		<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU"></script>
 		<script src="js/jquery-1.8.2.js"></script>
     </head>
-    <body onload="initShaurmap()">
+    <body onload="globalInitialization()">
 		<div class="main-wrapper">
+            <div id="balloon">
+                <img id="shaurma-thumbnail" src="img/imgtest.jpg" style="width: 40px; height: 40px;">
+                <div id="spot-descript">some shit</div>
+                <div id="how-to-get" class="btn orange" onclick="getRoute()">Как проехать сюда?</div>
+            </div>
 			<div class="shaurmap">
 				<div class="leftblock inline-block top">
-					<div class="btn orange">Кнопка</div>
+                    <div id="comments_block">
+                        <textarea class="comment-box"></textarea>
+                        <div id="button-wrapper">
+                            <div class="btn orange" onclick="init_debug_check()">Кнопка</div>
+                        </div>
+                    </div>
+
 				</div><div class="rightblock inline-block top">
 					<div id="map" style="width: 900px; height: 600px"></div>
 				</div>
