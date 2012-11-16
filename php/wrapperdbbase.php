@@ -7,7 +7,7 @@ class WrapperDBBase
 {
     protected $connection = NULL;
     protected $connectionStatus = false;
-    protected $data = NULL;
+    private $data = NULL;
 
     protected function __construct()
     {
