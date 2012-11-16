@@ -2,6 +2,7 @@
 
 require_once("settings.php");
 require_once("errors.php");
+require_once("validator.php");
 
 class WrapperDBBase
 {
@@ -66,7 +67,7 @@ class WrapperDBBase
 
     protected function checkToken($userID, $token)
     {
-        if((strlen($userID) > 0) && (strlen($token) == ServerSettings::getTokenLength()))
+        if(Validator::validateUserId($userID) && Validator::validateToken($token))
         {
             $userID = $this->connection->real_escape_string($userID);
             $token = $this->connection->real_escape_string($token);
@@ -78,17 +79,18 @@ class WrapperDBBase
             {
                 $row = $result->fetch_assoc();
                 $ts = time();
-                if(($ts - $row['createdTime'] > ServerSettings::getSessionLiveTime()) || $row['closed'])
-                {
-                    return ERRORS::SESSION_EXPIRED_ERROR;
-                }
-                else
+                $passedTime = $ts - $row['createdTime'];
+                if(Validator::validateTokenDateCreate($passedTime) || Validator::validateTokenClosed($row['closed']))
                 {
                     $query = "UPDATE sessions SET lastLogin=FROM_UNIXTIME('".$ts."') WHERE sessionID='".$row['sessionID']."'";
                     $result = $this->connection->query($query);
                     if($this->connection->errno)
                         return ERRORS::CHECK_TOKEN_MYSQL_ERROR;
                     return ERRORS::NO_ERROR;
+                }
+                else
+                {
+                    return ERRORS::SESSION_EXPIRED_ERROR;
                 }
             }
         }
