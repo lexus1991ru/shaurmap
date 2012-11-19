@@ -131,6 +131,7 @@ class WrapperDBBase
         return NULL;
     }
 
+
     /*
      * isUserModerator()
      *
