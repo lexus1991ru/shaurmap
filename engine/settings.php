@@ -29,6 +29,7 @@ class ServerSettings
     const maxCommentLength     = 2000;
     const minCommentLength     = 0;
     const maxCommentsInRequest = 100;
+    const maxCommentsPerDay    = 5;
 
     // Markets
     const maxMarketNameLength = 32;

@@ -131,7 +131,6 @@ class AjaxRequest
         {
             return ERRORS::UNKNOWN_REQUEST;
         }
-
         if(in_array($requestName, array_keys($this->requests)))
         {
             $pars   = $this->requests[$requestName][0];
@@ -148,6 +147,7 @@ class AjaxRequest
                     }
             }
             $func($pars);
+            return ERRORS::NO_ERROR;
         }
         else
         {
