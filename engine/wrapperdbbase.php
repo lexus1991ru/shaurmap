@@ -18,6 +18,7 @@ class WrapperDBBase
         }
     }
 
+
     protected function __destruct()
     {
         $this->Disconnect();
