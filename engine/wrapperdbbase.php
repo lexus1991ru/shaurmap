@@ -57,6 +57,7 @@ class WrapperDBBase
         }
     }
 
+
     public function getData()
     {
         if($this->data != NULL)
@@ -65,6 +66,15 @@ class WrapperDBBase
         }
     }
 
+    /*
+     * checkToken($userID, $token)
+     *
+     * checks $token and token from database
+     *
+     * @param (int) $userID - user id from database
+     * @param (int) $token - user token
+     * @return (int) error code
+     */
     protected function checkToken($userID, $token)
     {
         if(Validator::validateUserId($userID) && Validator::validateToken($token))
@@ -100,40 +110,76 @@ class WrapperDBBase
         }
     }
 
+    /*
+     * isUserAdmin()
+     *
+     * check the user to the presence of a admin
+     *
+     * @param (int) $userID - user id from database
+     * @return (bool)
+     * @return (NULL) if $userID is invalid
+     */
     protected function isUserAdmin($userID)
     {
-        $rights = $this->getUserRights($userID);
-        if($rights == 1)
-            return true;
-        return false;
+        if (Validator::validateUserId($userID))
+        {
+            $rights = $this->getUserRights($userID);
+            if($rights == 1)
+                return true;
+            return false;
+        }
+        return NULL;
     }
 
+    /*
+     * isUserModerator()
+     *
+     * check the user to the presence of a moderator
+     *
+     * @param (int) $userID - user id from database
+     * @return (bool)
+     * @return (NULL) if $userID is invalid
+     */
     protected function isUserModerator($userID)
     {
-        $rights = $this->getUserRights($userID);
-        if(($rights == 1) || ($rights == 2))
-            return true;
-        return false;
+        if (Validator::validateUserId($userID))
+        {
+            $rights = $this->getUserRights($userID);
+            if(($rights == 1) || ($rights == 2))
+                return true;
+            return false;
+        }
+        return NULL;
     }
 
+    /*
+     * getUserRights()
+     *
+     * return user rights when 0 - User, 1 - Admin, 2 - Moderator
+     *
+     * @param (int) $userID - user id from database
+     * @return (int) permission
+     * @return (NULL) if $userID is invalid
+     */
     private function getUserRights($userID)
     {
-        // 0 - User
-        // 1 - Admin
-        // 2 - Moderator
-        $userID = $this->connection->real_escape_string($userID);
-        $query = "SELECT permission FROM permissions WHERE userID='".$userID."'";
-
-        $result = $this->connection->query($query);
-        if($this->connection->errno)
-            return 0;
-
-        if($result->num_rows)
+        if (Validator::validateUserId($userID))
         {
-            $row = $result->fetch_assoc();
-            return $row['permission'];
+            $userID = $this->connection->real_escape_string($userID);
+            $query = "SELECT permission FROM permissions WHERE userID='".$userID."'";
+
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return 0;
+
+            if($result->num_rows)
+            {
+                $row = $result->fetch_assoc();
+                return $row['permission'];
+            }
+            return 0;
         }
-        return 0;
+        return NULL;
     }
 
 };

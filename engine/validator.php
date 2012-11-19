@@ -67,7 +67,7 @@ class Validator
 
     public static function validateUserId($userID)
     {
-        if (strlen($userID) > 0)
+        if ((strlen($userID) > 0) && (is_int($userID)))
         {
             return true;
         }
