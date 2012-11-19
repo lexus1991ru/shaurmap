@@ -57,7 +57,6 @@ class WrapperDBBase
         }
     }
 
-
     public function getData()
     {
         if($this->data != NULL)
@@ -130,7 +129,6 @@ class WrapperDBBase
         }
         return NULL;
     }
-
 
     /*
      * isUserModerator()

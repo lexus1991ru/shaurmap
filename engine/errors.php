@@ -36,6 +36,11 @@ class ERRORS
     const GET_MARKET_DESC_MYSQL_ERROR = 30;
     const MARKET_DESC_NOT_FOUND = 31;
     const UNKNOWN_REQUEST = 32;
+    const COMMENTS_DAY_MYSQL_ERROR = 33;
+    const COMMENT_LIMIT_REACHED = 34;
+    const MYSQL_ERROR = 35;
+    const CAN_EDIT_COMMENT_MYSQL_ERROR = 36;
+    const APPROVE_COMMENT_MYSQL_ERROR = 37;
 
     static public $serverMsg = array
     (
@@ -71,7 +76,12 @@ class ERRORS
         self::GET_MARKETS_MYSQL_ERROR => array("Mysql error in getMarket* function", ""),
         self::GET_MARKET_DESC_MYSQL_ERROR  => array("Mysql error in getMarketDesc* function", ""),
         self::MARKET_DESC_NOT_FOUND => array("Unable to found market description", ""),
-        self::UNKNOWN_REQUEST => array("Unknown type of request", "")
+        self::UNKNOWN_REQUEST => array("Unknown type of request", ""),
+        self::COMMENTS_DAY_MYSQL_ERROR => array("Mysql error in commentsOnDay function", ""),
+        self::COMMENT_LIMIT_REACHED => array("You can't post comments anymore today", "Вы больше не можете оставлять комментарии сегодня"),
+        self::MYSQL_ERROR => array("Mysql error somewhere..", ""),
+        self::CAN_EDIT_COMMENT_MYSQL_ERROR => array("Mysql error in canEditComment function", ""),
+        self::APPROVE_COMMENT_MYSQL_ERROR => array("Mysql error in approveComment function", "")
     );
 }
 

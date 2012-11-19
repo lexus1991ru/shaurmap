@@ -7,11 +7,13 @@ interface IWrapperDBComments
     public function getCommentsByMarket($marketID, $start, $count, $token, $userID);
     public function getCommentsByUser($userID, $start, $count, $token);
     public function getCommentByID($commentID, $token, $userID);
+    public function canPostComment($token, $userID);
     public function postComment($marketID, $userID, $mark, $text, $token);
     public function rankComment($commentID, $isThumbsUp, $token, $userID);
     public function editComment($commentID, $text,$token, $userID);
     public function deleteComment($commentID, $token, $userID);
-    public function approveComment($commentID, $token, $userID);
+    public function getUnmoderatedComments($start, $count, $token, $userID);
+    public function approveComment($commentID, $action, $token, $userID);
 }
 
 class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
@@ -26,35 +28,93 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         parent::__destruct();
     }
 
-    private function fetchCommentsFromRequest($result, $userID, $token)
+    // GOVNOKOD #1
+    // If $out is true result will be send to ajax
+    // If $out is false it just return true or false(internal use)
+    public function canPostComment($token, $userID, $out = true)
+    {
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $comments = $this->commentsOnDay($userID, $token);
+            if(!$out)
+            {
+                return ($comments <= ServerSettings::maxCommentsPerDay) ? true : false;
+            }
+            if($comments <= ServerSettings::maxCommentsPerDay)
+            {
+                $this->setData(1);
+            }
+            else
+            {
+                $this->setData(0);
+            }
+            return ERRORS::NO_ERROR;
+        }
+        if(!$out)
+        {
+            return false;
+        }
+        return $res;
+    }
+
+    private function canEditComment($commentID, $userID)
+    {
+
+        if($this->isUserModerator($user))
+            return true;
+        $query = "SELECT commentID FROM comments WHERE userID='".$userID."' AND commentID='".$commentID."'";
+        if($this->connection->errno)
+            return false;
+        if($result->num_rows)
+            return true;
+        return false;
+    }
+
+    private function commentsLastDay($userID, $token)
+    {
+        $count = 0;
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $query = "SELECT COUNT(commentID) AS comments_count FROM comments WHERE userID='".$userID."' AND UNIX_TIMESTAMP(commentTime) > '".$ts - $day."'";
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::COMMENTS_DAY_MYSQL_ERROR;
+            if($result->num_rows)
+            {
+                $row = $result->fetch_assoc();
+                $count = $row['comments_count'];
+            }
+        }
+        return $count;
+    }
+
+    private function fetchCommentsFromRequest($result, $userID)
     {
         if($result->num_rows)
         {
-            if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
+            $isModerator = $this->isUserModerator($userID);
+            $comments = array();
+            for($i = 0; $i < $result->num_rows; $i++)
             {
-                $isModerator = $this->isUserModerator($userID);
-                $comments = array();
-                for($i = 0; $i < $result->num_rows; $i++)
+                $row = $result->fetch_assoc();
+                $comment = NULL;
+                if($isModerator)
                 {
-                    $row = $result->fetch_assoc();
-                    $comment = NULL;
-                    if($isModerator)
-                    {
-                        $comment = new CommentModer($row['commentID'], $row['marketID'], $row['userID'],
-                            $row['commentTime'], $row['text'], $row['mark'],
-                            $row['photos'], $row['approved']);
-                    }
-                    else
-                    {
-                        $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
-                            $row['commentTime'], $row['text'], $row['mark'],
-                            $row['photos']);
-                    }
-                    $comments[$i] = $comment;
-
+                    $comment = new CommentModer($row['commentID'], $row['marketID'], $row['userID'],
+                        $row['commentTime'], $row['text'], $row['mark'],
+                        $row['photos'], $row['thumbType'], $row['approved']);
                 }
-                $this->setData($comments);
+                else
+                {
+                    $comment = new Comment($row['commentID'], $row['marketID'], $row['userID'],
+                        $row['commentTime'], $row['text'], $row['mark'],
+                        $row['photos'], $row['thumbType']);
+                }
+                $comments[$i] = $comment;
             }
+            $this->setData($comments);
         }
         return ERRORS::NO_ERROR;
     }
@@ -68,12 +128,16 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         if($count > ServerSettings::maxCommentsInRequest)
             $count = ServerSettings::maxCommentsInRequest;
 
-        $query = "SELECT * FROM comments WHERE marketID='".$marketID."' LIMIT ".$start.", ".$count;
+        $query = "";
+        if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
+            $query = "SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID AS cID FROM thumbs WHERE userID='".$userID."') as t2".
+                     " ON t1.commentID=t2.cID WHERE marketID='".$marketID."' LIMIT ".$start.", ".$count;
+        else
+            $query = "SELECT * FROM comments WHERE marketID='".$marketID."' LIMIT ".$start.", ".$count;
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::GET_COMMENTS_MYSQL_ERROR;
-
-        return fetchCommentsFromRequest($result, $userID, $token);
+        return $this->fetchCommentsFromRequest($result, $userID);
     }
 
     public function getCommentsByUser($userID, $start, $count, $token)
@@ -85,12 +149,17 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         if($count > ServerSettings::maxCommentsInRequest)
             $count = ServerSettings::maxCommentsInRequest;
 
-        $query = "SELECT * FROM comments WHERE userID='".$userID."' LIMIT ".$start.", ".$count;
+        $query = "";
+        if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
+            $query = "SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID FROM thumbs WHERE userID='".$userID."') as t2".
+                     " ON t1.commentID=t2.commentID WHERE userID='".$userID."' LIMIT ".$start.", ".$count;
+        else
+            $query = "SELECT * FROM comments WHERE userID='".$userID."' LIMIT ".$start.", ".$count;
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::GET_COMMENTS_MYSQL_ERROR;
 
-        return fetchCommentsFromRequest($result, $userID, $token);
+        return $this->fetchCommentsFromRequest($result, $userID);
     }
 
     public function getCommentByID($commentID, $token, $userID)
@@ -99,12 +168,53 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $start = $this->connection->real_escape_string($token);
         $count = $this->connection->real_escape_string($userID);
 
-        $query = "SELECT * FROM comments WHERE $commentID='".$commentID."'";
+        $query = "";
+        if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
+            $query = "SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID FROM thumbs WHERE userID='".$userID."') as t2".
+                     " ON t1.commentID=t2.commentID WHERE $commentID='".$commentID."'";
+        else
+            $query = "SELECT * FROM comments WHERE $commentID='".$commentID."'";
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::GET_COMMENTS_MYSQL_ERROR;
 
-        return fetchCommentsFromRequest($result, $userID, $token);
+        return $this->fetchCommentsFromRequest($result, $userID);
+    }
+
+    public function rankComment($commentID, $isThumbsUp, $token, $userID)
+    {
+
+        // SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID FROM thumbs WHERE userID='9') as t2 ON t1.commentID=t2.commentID WHERE marketID='5'
+        $commentID = $this->connection->real_escape_string($commentID);
+        $userID = $this->connection->real_escape_string($userID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            $query = "SELECT thumbType, commentID FROM thumbs WHERE userID='".$userID."' AND commentID='".$commentID."'";
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::RANK_COMMENT_MYSQL_ERROR;
+            if($result->num_rows)
+                return ERRORS::COMMENT_ALREADY_RANKED;
+
+            if($isThumbsUp)
+            {
+                $query = "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'; ".
+                         "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
+                         "VALUES(NULL, '".$userID."', '".$commentID."', '1', FROM_UNIXTIME('".time()."'))";
+            }
+            else
+            {
+                $query = "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'; ".
+                         "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
+                         "VALUES(NULL, '".$userID."', '".$commentID."', '0', FROM_UNIXTIME('".time()."'))";
+            }
+            $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::RANK_COMMENT_MYSQL_ERROR;
+            return ERRORS::NO_ERROR;
+        }
+        return $res;
     }
 
     public function postComment($marketID, $userID, $mark, $text, $token)
@@ -118,17 +228,25 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         if($res == ERRORS::NO_ERROR)
         {
             $ts = time();
+            $day = 86400; //60*60*24 = day
             if(Validator::validateMark($mark))
             {
                 if(Validator::validateCommentLength($text))
                 {
-                    // TODO: Photos
-                    $query = "INSERT INTO comments (commentID, marketID, userID, commentTime, text, mark, photos, approved, thumbsUp, thumbsDown) ".
-                        "VALUES (NULL, '".$marketID."', '".$userID."', FROM_UNIXTIME('".$ts."'), '".$text."', '".$mark."', NULL, '0', '0', '0')";
-                    $result = $this->connection->query($query);
-                    if($this->connection->errno)
-                        return ERRORS::POST_COMMENT_MYSQL_ERROR;
-                    return ERRORS::NO_ERROR;
+                    if($this->canPostComment($token, $userID, false))
+                    {
+                        // TODO: Photos
+                        $query = "INSERT INTO comments (commentID, marketID, userID, commentTime, text, mark, photos, approved, thumbsUp, thumbsDown) ".
+                            "VALUES (NULL, '".$marketID."', '".$userID."', FROM_UNIXTIME('".$ts."'), '".$text."', '".$mark."', NULL, NULL, '0', '0')";
+                        $result = $this->connection->query($query);
+                        if($this->connection->errno)
+                            return ERRORS::POST_COMMENT_MYSQL_ERROR;
+                        return ERRORS::NO_ERROR;
+                    }
+                    else
+                    {
+                        return ERRORS::COMMENT_LIMIT_REACHED;
+                    }
                 }
                 else
                 {
@@ -140,37 +258,7 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
                 return ERRORS::BAD_MARKET_MARK;
             }
         }
-        else
-        {
-            return $res;
-        }
-    }
-
-    public function rankComment($commentID, $isThumbsUp, $token, $userID)
-    {
-        $commentID = $this->connection->real_escape_string($commentID);
-        $res = $this->checkToken($userID, $token);
-
-        if($res == ERRORS::NO_ERROR)
-        {
-            $query = "";
-            if($isThumbsUp)
-            {
-                $query = "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'";
-            }
-            else
-            {
-                $query = "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'";
-            }
-            $result = $this->connection->query($query);
-            if($this->connection->errno)
-                return ERRORS::RANK_COMMENT_MYSQL_ERROR;
-            return ERRORS::NO_ERROR;
-        }
-        else
-        {
-            return $res;
-        }
+        return $res;
     }
 
     public function editComment($commentID, $text, $token, $userID)
@@ -179,45 +267,41 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $commentID = $this->connection->real_escape_string($commentID);
         $userID = $this->connection->real_escape_string($userID);
         $text = $this->connection->real_escape_string($text);
+
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
-            $userRights = $this->getUserRights($userID);
-            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
+            if(Validator::validateCommentLength($text))
             {
-                if(Validator::validateCommentLength($text))
+                if($this->canEditComment($commentID, $userID))
                 {
+                    // TODO: Photos
                     $query = "UPDATE comments SET text='".$text."' WHERE commentID='".$commentID."'";
                     $result = $this->connection->query($query);
                     if($this->connection->errno)
-                        return ERRORS::DELETE_COMMENT_MYSQL_ERROR;
+                        return ERRORS::EDIT_COMMENT_MYSQL_ERROR;
                     return ERRORS::NO_ERROR;
                 }
                 else
                 {
-                    return ERRORS::BAD_COMMENT_LENGTH;
+                    return ERRORS::PERMISSION_DENIED;
                 }
             }
             else
             {
-                return ERRORS::PERMISSION_DENIED;
+                return ERRORS::BAD_COMMENT_LENGTH;
             }
         }
-        else
-        {
-            return $res;
-        }
+        return $res;
     }
 
     public function deleteComment($commentID, $token, $userID)
     {
-        // TODO: Author sholub be able to delete comment
         $commentID = $this->connection->real_escape_string($commentID);
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
-            $userRights = $this->getUserRights($userID);
-            if(Validator::isAdmin($userRights) || Validator::isModerator($userRights))
+            if($this->canEditComment($commentID, $userID))
             {
                 $query = "DELETE FROM comments WHERE commentID='".$commentID."'";
                 $result = $this->connection->query($query);
@@ -230,15 +314,61 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
                 return ERRORS::PERMISSION_DENIED;
             }
         }
-        else
-        {
-            return $res;
-        }
+        return $res;
     }
 
-    public function approveComment($commentID, $token, $userID)
+    public function getUnmoderatedComments($start, $count, $token, $userID)
     {
+        $start = $this->connection->real_escape_string($start);
+        $count = $this->connection->real_escape_string($count);
+        $userID = $this->connection->real_escape_string($userID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            if($this->isUserModerator($userID))
+            {
+                $query = "SELECT * FROM comments WHERE ISNULL(approved) LIMIT ".$start.", ".$count;
+                $result = $this->connection->query($query);
+                if($this->connection->errno)
+                    return ERRORS::GET_COMMENTS_MYSQL_ERROR;
+                return $this->fetchCommentsFromRequest($result);
+            }
+            else
+            {
+                return ERRORS::PERMISSION_DENIED;
+            }
+        }
+        return $res;
+    }
 
+    public function approveComment($commentID, $action, $token, $userID)
+    {
+        // $action = 0 - NOT approved
+        // $action = 1 - approved
+        $commentID = $this->connection->real_escape_string($commentID);
+        $action = $this->connection->real_escape_string($action);
+        $userID = $this->connection->real_escape_string($userID);
+        $res = $this->checkToken($userID, $token);
+        if($res == ERRORS::NO_ERROR)
+        {
+            if($this->isUserModerator($userID))
+            {
+                $query = "";
+                if($action)
+                    $query = "UPDATE comments SET approved='1' WHERE commentID='".$commentID."'";
+                else
+                    $query = "UPDATE comments SET approved='0' WHERE commentID='".$commentID."'";
+                $result = $this->connection->query($query);
+                if($this->connection->errno)
+                    return ERRORS::APPROVE_COMMENT_MYSQL_ERROR;
+                return ERRORS::NO_ERROR;
+            }
+            else
+            {
+                return ERRORS::PERMISSION_DENIED;
+            }
+        }
+        return $res;
     }
 }
 
@@ -251,10 +381,10 @@ class Comment
     public $text;
     public $mark;
     public $photos;
-    public $ranked;
+    public $thumbType;
 
     function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
-                         $_mark, $_photos)
+                         $_mark, $_photos, $_ranked)
     {
         $this->commentID =   $_commentID;
         $this->marketID =    $_marketID;
@@ -263,7 +393,7 @@ class Comment
         $this->text =        $_text;
         $this->mark =        $_mark;
         $this->photos =      $_photos;
-        $this->ranked =      NULL;
+        $this->thumbType =   NULL;
     }
 }
 
@@ -271,10 +401,10 @@ class CommentModer extends Comment
 {
     public $approved;
     function __construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
-                     $_mark, $_photos, $_approved)
+                     $_mark, $_photos, $_thumbType, $_approved)
     {
-        parent::__contruct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
-                           $_mark, $_photos);
+        parent::__construct($_commentID, $_marketID, $_userID, $_commentTime, $_text,
+                           $_mark, $_photos, $_thumbType);
         $this->approved =    $_approved;
     }
 }
