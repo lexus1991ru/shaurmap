@@ -10,7 +10,7 @@ $supportedRequests = array(
         requestMarketComments
     ),
     "usercomments" => array(
-        array("userid", "start", "count", "token"),
+        array("userid", "start", "count", "token", "targetuserid"),
         true,
         requestUserComments
     ),
@@ -81,8 +81,9 @@ function requestUserComments($pars)
     $start = $_POST[$pars[1]];
     $count = $_POST[$pars[2]];
     $token = $_POST[$pars[3]];
+    $targetUserID = $_POST[$pars[4]];
     $dbConn = new WrapperDBComments();
-    $res = $dbConn->getCommentsByUser($userID, $start, $count, $token);
+    $res = $dbConn->getCommentsByUser($userID, $start, $count, $token, $targetUserID);
     if($res == ERRORS::NO_ERROR)
     {
         echo json_response($res, $dbConn->getData());
