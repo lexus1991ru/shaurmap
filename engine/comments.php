@@ -95,10 +95,9 @@ function requestUserComments($pars)
 
 function requestComment($pars)
 {
-    $userID = $_POST[$pars[0]];
-    $start = $_POST[$pars[1]];
-    $count = $_POST[$pars[2]];
-    $token = $_POST[$pars[3]];
+    $commentID = $_POST[$pars[0]];
+    $token = $_POST[$pars[1]];
+    $userID = $_POST[$pars[2]];
     $dbConn = new WrapperDBComments();
     $res = $dbConn->getCommentByID($commentID, $token, $userID);
     if($res == ERRORS::NO_ERROR)

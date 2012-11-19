@@ -61,9 +61,10 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
     private function canEditComment($commentID, $userID)
     {
 
-        if($this->isUserModerator($user))
+        if($this->isUserModerator($userID))
             return true;
         $query = "SELECT commentID FROM comments WHERE userID='".$userID."' AND commentID='".$commentID."'";
+        $result = $this->connection->query($query);
         if($this->connection->errno)
             return false;
         if($result->num_rows)
@@ -77,6 +78,8 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
+            $ts = time();
+            $day = 86400; //60*60*24 = day
             $query = "SELECT COUNT(commentID) AS comments_count FROM comments WHERE userID='".$userID."' AND UNIX_TIMESTAMP(commentTime) > '".$ts - $day."'";
             $result = $this->connection->query($query);
             if($this->connection->errno)
@@ -331,7 +334,7 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
                 $result = $this->connection->query($query);
                 if($this->connection->errno)
                     return ERRORS::GET_COMMENTS_MYSQL_ERROR;
-                return $this->fetchCommentsFromRequest($result);
+                return $this->fetchCommentsFromRequest($result, $userID);
             }
             else
             {
