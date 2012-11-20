@@ -41,31 +41,32 @@ class ERRORS
     const MYSQL_ERROR = 35;
     const CAN_EDIT_COMMENT_MYSQL_ERROR = 36;
     const APPROVE_COMMENT_MYSQL_ERROR = 37;
+    const COMMENT_ALREADY_RANKED = 38;
 
     static public $serverMsg = array
     (
         self::NO_ERROR => array("OK", "OK"),
-        self::MYSQL_CONNECT_ERROR => array("Error during connection to the database", "Возникла ошибка во время подключения к базе данных"),
-        self::EMAIL_BAD_FORMAT => array("Email has bad format", "Неверный формат email"),
-        self::EMAIL_ALREADY_USED => array("Email already used", "Данный email уже используется"),
-        self::EMAIL_ALREADY_USED_REG => array("Email already used in registration", "Данный email находится в процессе регистрации и не подтвержден"),
-        self::LOGIN_BAD_FORMAT => array("Username has bad format", "СОСИ ХУЙ С ЛОГИНОМ"),
-        self::LOGIN_ALREADY_USED => array("Username already used", "Пользователь с данным именем уже зарегистрирован"),
+        self::MYSQL_CONNECT_ERROR => array("Error during connection to the database", "???????? ?????? ?? ????? ??????????? ? ???? ??????"),
+        self::EMAIL_BAD_FORMAT => array("Email has bad format", "???????? ?????? email"),
+        self::EMAIL_ALREADY_USED => array("Email already used", "?????? email ??? ????????????"),
+        self::EMAIL_ALREADY_USED_REG => array("Email already used in registration", "?????? email ????????? ? ???????? ??????????? ? ?? ???????????"),
+        self::LOGIN_BAD_FORMAT => array("Username has bad format", "???? ??? ? ???????"),
+        self::LOGIN_ALREADY_USED => array("Username already used", "???????????? ? ?????? ?????? ??? ???????????????"),
         self::ACTIVATION_REQUEST_MYSQL_ERROR => array("Mysql error in submitActivationRequest function", ""),
         self::ACTIVATION_LINK_MYSQL_ERROR => array("Mysql error in checkActivationLink function", ""),
-        self::ACTIVATION_LINK_ACTIVATED => array("Activation link was activated", "Аккаунт уже был активирован"),
-        self::ACTIVATION_LINK_NOT_FOUND => array("Activation link not found", "Неверная ссылка для активации аккаунта"),
+        self::ACTIVATION_LINK_ACTIVATED => array("Activation link was activated", "??????? ??? ??? ???????????"),
+        self::ACTIVATION_LINK_NOT_FOUND => array("Activation link not found", "???????? ?????? ??? ????????? ????????"),
         self::ACTIVATION_CONFIRM_MYSQL_ERROR => array("Mysql error in confirmActivation function", ""),
-        self::BAD_PASSWORD_FORMAT => array("Bad password format", "СОСИ ХУЙ С ПАРОЛЕМ"),
-        self::PASSWORDS_NOT_EQUAL => array("Passwords is not equal", "Пароли не совпадают"),
-        self::ACTIVATION_CONFIRMED => array("Activation confirmed", "Активация аккаунта завершена!"),
+        self::BAD_PASSWORD_FORMAT => array("Bad password format", "???? ??? ? ???????"),
+        self::PASSWORDS_NOT_EQUAL => array("Passwords is not equal", "?????? ?? ?????????"),
+        self::ACTIVATION_CONFIRMED => array("Activation confirmed", "????????? ???????? ?????????!"),
         self::UNKNOWN_GET_REQUEST => array("Unknown GET request", ""),
         self::UNKNOWN_POST_REQUEST => array("Unknown POST request", ""),
-        self::BAD_USERNAME_OR_PASSWORD => array("Bad username or password", "Неверное имя пользователя или пароль"),
+        self::BAD_USERNAME_OR_PASSWORD => array("Bad username or password", "???????? ??? ???????????? ??? ??????"),
         self::LOGIN_MYSQL_ERROR => array("Mysql error in loginUser function", ""),
         self::CHECK_TOKEN_MYSQL_ERROR => array("Mysql error in checkToken function", ""),
         self::BAD_TOKEN_ERROR => array("Bad token received from user", ""),
-        self::SESSION_EXPIRED_ERROR => array("Session expired", "К сожалению время вашей сессии истекло"),
+        self::SESSION_EXPIRED_ERROR => array("Session expired", "? ????????? ????? ????? ?????? ???????"),
         self::POST_COMMENT_MYSQL_ERROR => array("Mysql error in postComment function", ""),
         self::BAD_COMMENT_LENGTH => array("Bad comment lenght", ""),
         self::BAD_MARKET_MARK => array("Bad market mark", ""),
@@ -78,10 +79,11 @@ class ERRORS
         self::MARKET_DESC_NOT_FOUND => array("Unable to found market description", ""),
         self::UNKNOWN_REQUEST => array("Unknown type of request", ""),
         self::COMMENTS_DAY_MYSQL_ERROR => array("Mysql error in commentsOnDay function", ""),
-        self::COMMENT_LIMIT_REACHED => array("You can't post comments anymore today", "Вы больше не можете оставлять комментарии сегодня"),
+        self::COMMENT_LIMIT_REACHED => array("You can't post comments anymore today", "?? ?????? ?? ?????? ????????? ??????????? ???????"),
         self::MYSQL_ERROR => array("Mysql error somewhere..", ""),
         self::CAN_EDIT_COMMENT_MYSQL_ERROR => array("Mysql error in canEditComment function", ""),
-        self::APPROVE_COMMENT_MYSQL_ERROR => array("Mysql error in approveComment function", "")
+        self::APPROVE_COMMENT_MYSQL_ERROR => array("Mysql error in approveComment function", ""),
+        self::COMMENT_ALREADY_RANKED => array("You have ranked this comment already. Fuck you", "")
     );
 }
 

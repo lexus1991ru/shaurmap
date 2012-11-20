@@ -5,7 +5,7 @@ require_once("wrapperdbbase.php");
 interface IWrapperDBComments
 {
     public function getCommentsByMarket($marketID, $start, $count, $token, $userID);
-    public function getCommentsByUser($userID, $start, $count, $token);
+    public function getCommentsByUser($userID, $start, $count, $token, $targetUserID);
     public function getCommentByID($commentID, $token, $userID);
     public function canPostComment($token, $userID);
     public function postComment($marketID, $userID, $mark, $text, $token);
@@ -61,9 +61,10 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
     private function canEditComment($commentID, $userID)
     {
 
-        if($this->isUserModerator($user))
+        if($this->isUserModerator($userID))
             return true;
         $query = "SELECT commentID FROM comments WHERE userID='".$userID."' AND commentID='".$commentID."'";
+        $result = $this->connection->query($query);
         if($this->connection->errno)
             return false;
         if($result->num_rows)
@@ -77,6 +78,8 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $res = $this->checkToken($userID, $token);
         if($res == ERRORS::NO_ERROR)
         {
+            $ts = time();
+            $day = 86400; //60*60*24 = day
             $query = "SELECT COUNT(commentID) AS comments_count FROM comments WHERE userID='".$userID."' AND UNIX_TIMESTAMP(commentTime) > '".$ts - $day."'";
             $result = $this->connection->query($query);
             if($this->connection->errno)
@@ -140,11 +143,12 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         return $this->fetchCommentsFromRequest($result, $userID);
     }
 
-    public function getCommentsByUser($userID, $start, $count, $token)
+    public function getCommentsByUser($userID, $start, $count, $token, $targetUserID)
     {
         $userID = $this->connection->real_escape_string($userID);
         $start = $this->connection->real_escape_string($start);
         $count = $this->connection->real_escape_string($count);
+        $targetUserID = $this->connection->real_escape_string($targetUserID);
 
         if($count > ServerSettings::maxCommentsInRequest)
             $count = ServerSettings::maxCommentsInRequest;
@@ -152,9 +156,9 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $query = "";
         if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
             $query = "SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID FROM thumbs WHERE userID='".$userID."') as t2".
-                     " ON t1.commentID=t2.commentID WHERE userID='".$userID."' LIMIT ".$start.", ".$count;
+                     " ON t1.commentID=t2.commentID WHERE userID='".$targetUserID."' LIMIT ".$start.", ".$count;
         else
-            $query = "SELECT * FROM comments WHERE userID='".$userID."' LIMIT ".$start.", ".$count;
+            $query = "SELECT * FROM comments WHERE userID='".$targetUserID."' LIMIT ".$start.", ".$count;
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::GET_COMMENTS_MYSQL_ERROR;
@@ -171,9 +175,9 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
         $query = "";
         if($this->checkToken($userID, $token) == ERRORS::NO_ERROR)
             $query = "SELECT * FROM comments as t1 LEFT JOIN (SELECT thumbType, commentID FROM thumbs WHERE userID='".$userID."') as t2".
-                     " ON t1.commentID=t2.commentID WHERE $commentID='".$commentID."'";
+                     " ON t1.commentID=t2.commentID WHERE t1.commentID='".$commentID."'";
         else
-            $query = "SELECT * FROM comments WHERE $commentID='".$commentID."'";
+            $query = "SELECT * FROM comments WHERE commentID='".$commentID."'";
         $result = $this->connection->query($query);
         if($this->connection->errno)
             return ERRORS::GET_COMMENTS_MYSQL_ERROR;
@@ -196,20 +200,23 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
                 return ERRORS::RANK_COMMENT_MYSQL_ERROR;
             if($result->num_rows)
                 return ERRORS::COMMENT_ALREADY_RANKED;
-
+            $query1 = "";
             if($isThumbsUp)
             {
-                $query = "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'; ".
-                         "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
+                $query =  "UPDATE comments SET thumbsUp = thumbsUp + 1 WHERE commentID='".$commentID."'";
+                $query1 = "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
                          "VALUES(NULL, '".$userID."', '".$commentID."', '1', FROM_UNIXTIME('".time()."'))";
             }
             else
             {
-                $query = "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'; ".
-                         "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
+                $query =  "UPDATE comments SET thumbsDown = thumbsDown + 1 WHERE commentID='".$commentID."'";
+                $query1 = "INSERT INTO thumbs (thumbID, userID, commentID, thumbType, thumbsTime) ".
                          "VALUES(NULL, '".$userID."', '".$commentID."', '0', FROM_UNIXTIME('".time()."'))";
             }
             $result = $this->connection->query($query);
+            if($this->connection->errno)
+                return ERRORS::RANK_COMMENT_MYSQL_ERROR;
+            $result = $this->connection->query($query1);
             if($this->connection->errno)
                 return ERRORS::RANK_COMMENT_MYSQL_ERROR;
             return ERRORS::NO_ERROR;
@@ -331,7 +338,7 @@ class WrapperDBComments extends WrapperDBBase implements IWrapperDBComments
                 $result = $this->connection->query($query);
                 if($this->connection->errno)
                     return ERRORS::GET_COMMENTS_MYSQL_ERROR;
-                return $this->fetchCommentsFromRequest($result);
+                return $this->fetchCommentsFromRequest($result, $userID);
             }
             else
             {

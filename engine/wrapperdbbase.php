@@ -104,10 +104,7 @@ class WrapperDBBase
                 }
             }
         }
-        else
-        {
-            return ERRORS::BAD_TOKEN_ERROR;
-        }
+        return ERRORS::BAD_TOKEN_ERROR;
     }
 
     /*
@@ -167,7 +164,6 @@ class WrapperDBBase
         {
             $userID = $this->connection->real_escape_string($userID);
             $query = "SELECT permission FROM permissions WHERE userID='".$userID."'";
-
             $result = $this->connection->query($query);
             if($this->connection->errno)
                 return 0;
