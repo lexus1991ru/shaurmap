@@ -12,14 +12,14 @@ var thisPlacemark;
 var axis = {
     x: 1,
     y: 0
-}
+};
 
 
 var shaurmaShop = {
     name: 'Шаурма на средном',
     desc: 'Самая четкая шаурма в Нижнем! Отвечаю!',
     htmlBalloonContent: $('#balloon').html()
-}
+};
 
 var debug = true;
 
@@ -43,13 +43,24 @@ function initShaurmap() {
     // Scale slider
     Mymap.controls.add('zoomControl', { left : '15px', bottom: '15px' });
 
+    $('<div class="curLocBtn btn orange">Myloc</div>')
+        .css({ position: 'absolute', left: '5px', zIndex: '1000' ,top: '50px'})
+        .appendTo(Mymap.panes.get('controls').getElement());
+
+    Mymap.events.add('click', function (e) {
+        var position = e.get('coordPosition');
+        Mymap.geoObjects.add(new ymaps.Placemark(position,{
+            hintContent: 'я здесь'
+        },{
+            iconImageHref: 'img/zoidberg.png'
+        }));
+    });
+
     currentLocation[0] = ymaps.geolocation.latitude;
     currentLocation[1] = ymaps.geolocation.longitude;
 
     var currentLocationPlacemark = new ymaps.Placemark(currentLocation,{
-        balloonContentHeader: ymaps.geolocation.country,
-        balloonContent: ymaps.geolocation.city,
-        balloonContenFooter: ymaps.geolocation.region
+        balloonContentHeader: 'я здесь блядь!'
     });
 
 	// Some shit on the map
@@ -122,6 +133,8 @@ function initShaurmap() {
 
     return Mymap;
 }
+
+
 
 /*
 * gets the MAP width, height and upper left corner coordinates
